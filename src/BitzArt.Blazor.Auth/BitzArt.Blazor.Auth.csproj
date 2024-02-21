@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<PackageId>BitzArt.Blazor.Auth</PackageId>
+		<Authors>BitzArt</Authors>
+		<Description>Authentication for Blazor United</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/BitzArt/Blazor.Auth</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/BitzArt/Blazor.Auth</PackageProjectUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="True" Visible="False" PackagePath="\" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.2" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.0" />
+	</ItemGroup>
+
+</Project>

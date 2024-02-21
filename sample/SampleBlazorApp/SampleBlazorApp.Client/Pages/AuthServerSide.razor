@@ -1,0 +1,19 @@
+﻿@page "/auth-server"
+@using System.Text.Json
+
+@rendermode InteractiveServer
+
+<PageTitle>Server Side</PageTitle>
+
+<RouteAuthorize />
+
+<AuthorizeView>
+    <NotAuthorized>
+        <h1>You are not authenticated</h1>
+    </NotAuthorized>
+    <Authorized>
+        <h1>You are authenticated</h1>
+        @JsonSerializer.Serialize(@context.User.Claims.Select(x => new {x.Type, x.Value, x.Issuer, x.Subject?.Name, x.ValueType}), new JsonSerializerOptions { WriteIndented = true })
+    </Authorized>
+</AuthorizeView>
+    

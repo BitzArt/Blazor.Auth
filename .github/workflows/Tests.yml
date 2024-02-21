@@ -1,0 +1,25 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '*'
+
+jobs:
+  tests:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal

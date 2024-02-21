@@ -1,0 +1,22 @@
+﻿@page "/server-sign-in"
+
+@rendermode @(new InteractiveServerRenderMode(false))
+
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
+
+<PageTitle>Sign In</PageTitle>
+
+<button type="submit" class="w-100 btn btn-lg btn-primary" @onclick="SignInAsync">Sign In</button>
+
+@code {
+    private async Task SignInAsync()
+    {
+        var payload = new SignInPayload();
+
+        var result = await AuthenticationService.SignInAsync(payload);
+
+        // NavigationManager.NavigateTo("/", true);
+    }
+}

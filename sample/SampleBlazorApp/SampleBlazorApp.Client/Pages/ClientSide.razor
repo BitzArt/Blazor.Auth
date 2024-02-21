@@ -1,0 +1,27 @@
+﻿@page "/client"
+
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+@inject UserState TestService
+
+<PageTitle>Client Side</PageTitle>
+
+Client Side
+
+<button @onclick="Test">Sign In</button>
+
+<AuthorizeView>
+    <NotAuthorized>
+        <h1>You are not authenticated</h1>
+    </NotAuthorized>
+    <Authorized>
+        <h1>You are authenticated</h1>
+        @context.User.Identity?.IsAuthenticated
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private void Test()
+    {
+    }
+}

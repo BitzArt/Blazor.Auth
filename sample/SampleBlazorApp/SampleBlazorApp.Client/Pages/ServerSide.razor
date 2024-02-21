@@ -1,0 +1,17 @@
+﻿@page "/server"
+
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<PageTitle>Server Side</PageTitle>
+
+Server Side
+
+<AuthorizeView>
+    <NotAuthorized>
+        <h1>You are not authenticated</h1>
+    </NotAuthorized>
+    <Authorized>
+        <h1>You are authenticated</h1>
+        @context.User.Identity?.IsAuthenticated
+    </Authorized>
+</AuthorizeView>
