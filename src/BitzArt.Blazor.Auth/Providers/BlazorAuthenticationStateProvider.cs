@@ -54,7 +54,7 @@ public class BlazorAuthenticationStateProvider(
                 return UnauthorizedState;
             }
 
-            var refreshResult = await authService.RefreshAsync(jwtPair.RefreshToken);
+            var refreshResult = await authService.RefreshJetPairAsync(jwtPair.RefreshToken);
 
             if (refreshResult?.IsSuccess != true)
             {

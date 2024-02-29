@@ -10,7 +10,7 @@ public class AuthenticationService(ILocalStorageService localStorage) : IAuthent
 
     public virtual async Task<AuthenticationResult?> SignInAsync(object signInPayload)
     {
-        var authResult = await GetJwtPairAsync(signInPayload);
+        var authResult = await GetSignInResultAsync(signInPayload);
 
         if (authResult?.IsSuccess == true)
             await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
@@ -28,9 +28,9 @@ public class AuthenticationService(ILocalStorageService localStorage) : IAuthent
         return authResult;
     }
 
-    public async Task<AuthenticationResult?> RefreshAsync(string refreshToken)
+    public async Task<AuthenticationResult?> RefreshJetPairAsync(string refreshToken)
     {
-        var authResult = await RefreshJwtPairAsync(refreshToken);
+        var authResult = await GetRefreshJwtPairResultAsync(refreshToken);
 
         if (authResult?.IsSuccess == true)
             await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
@@ -47,7 +47,7 @@ public class AuthenticationService(ILocalStorageService localStorage) : IAuthent
         }
     }
 
-    public virtual Task<AuthenticationResult?> GetJwtPairAsync(object signInPayload)
+    public virtual Task<AuthenticationResult?> GetSignInResultAsync(object signInPayload)
     {
         throw new NotImplementedException();
     }
@@ -57,7 +57,7 @@ public class AuthenticationService(ILocalStorageService localStorage) : IAuthent
         throw new NotImplementedException();
     }
 
-    public virtual Task<AuthenticationResult?> RefreshJwtPairAsync(string refreshToken)
+    public virtual Task<AuthenticationResult?> GetRefreshJwtPairResultAsync(string refreshToken)
     {
         return Task.FromResult((AuthenticationResult?)null);
     }
@@ -91,7 +91,7 @@ public class AuthenticationService<TSignInPayload, TSignUpPayload>(ILocalStorage
         throw new NotImplementedException();
     }
 
-    public override async Task<AuthenticationResult?> GetJwtPairAsync(object signInPayload)
+    public override async Task<AuthenticationResult?> GetSignInResultAsync(object signInPayload)
     {
         if (signInPayload is not TSignInPayload signInPayloadCasted)
             throw new Exception($"Sign-in payload is not {typeof(TSignInPayload).Name} type");

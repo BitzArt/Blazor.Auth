@@ -23,7 +23,7 @@ public static class MapAuthEndpointsExtension
             var bodyAsString = await reader.ReadToEndAsync();
 
             var payload = JsonSerializer.Deserialize(bodyAsString, type);
-            var result = await authService.GetJwtPairAsync(payload!);
+            var result = await authService.GetSignInResultAsync(payload!);
 
             return Results.Ok(result);
         });
@@ -55,7 +55,7 @@ public static class MapAuthEndpointsExtension
             var bodyAsString = await reader.ReadToEndAsync();
 
             var refreshToken = JsonSerializer.Deserialize<string>(bodyAsString);
-            var result = await authService.RefreshJwtPairAsync(refreshToken!);
+            var result = await authService.GetRefreshJwtPairResultAsync(refreshToken!);
 
             return result;
         });

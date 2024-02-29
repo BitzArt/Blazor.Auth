@@ -4,11 +4,11 @@ public interface IAuthenticationService
 {
     public Task<AuthenticationResult?> SignInAsync(object signInPayload);
     public Task<AuthenticationResult?> SignUpAsync(object signUpPayload);
-    public Task<AuthenticationResult?> RefreshAsync(string refreshToken);
+    public Task<AuthenticationResult?> RefreshJetPairAsync(string refreshToken);
 
-    public Task<AuthenticationResult?> GetJwtPairAsync(object signInPayload);
+    public Task<AuthenticationResult?> GetSignInResultAsync(object signInPayload);
     public Task<AuthenticationResult?> GetSignUpResultAsync(object signUpPayload);
-    public Task<AuthenticationResult?> RefreshJwtPairAsync(string refreshToken);
+    public Task<AuthenticationResult?> GetRefreshJwtPairResultAsync(string refreshToken);
     
     public Type? GetSignInPayloadType();
     public Type? GetSignUpPayloadType();

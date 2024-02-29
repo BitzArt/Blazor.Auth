@@ -9,7 +9,7 @@ public class ClientSideAuthenticationService(
     HttpClient httpClient)
     : AuthenticationService(localStorage)
 {
-    public override async Task<AuthenticationResult?> GetJwtPairAsync(object signInPayload)
+    public override async Task<AuthenticationResult?> GetSignInResultAsync(object signInPayload)
     {
         var response = await httpClient.PostAsJsonAsync("/api/sign-in", signInPayload);
 
@@ -35,7 +35,7 @@ public class ClientSideAuthenticationService(
         return authResult;
     }
 
-    public override async Task<AuthenticationResult?> RefreshJwtPairAsync(string refreshToken)
+    public override async Task<AuthenticationResult?> GetRefreshJwtPairResultAsync(string refreshToken)
     {
         var response = await httpClient.PostAsJsonAsync("/api/refresh", refreshToken);
 
