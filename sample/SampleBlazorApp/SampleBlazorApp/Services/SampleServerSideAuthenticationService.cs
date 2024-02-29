@@ -13,7 +13,12 @@ public class SampleServerSideAuthenticationService(ILocalStorageService localSto
         var authResult = new AuthenticationResult
         {
             IsSuccess = true,
-            JwtPair = jwt.BuildJwtPair()
+            JwtPair = jwt.BuildJwtPair(),
+            Data = new Dictionary<string, object>
+            {
+                { "userId", 1 },
+                { "userName", "John Doe" }
+            }
         };
 
         return Task.FromResult<AuthenticationResult?>(authResult);
@@ -24,7 +29,12 @@ public class SampleServerSideAuthenticationService(ILocalStorageService localSto
         var authResult = new AuthenticationResult
         {
             IsSuccess = true,
-            JwtPair = jwt.BuildJwtPair()
+            JwtPair = jwt.BuildJwtPair(),
+            Data = new Dictionary<string, object>
+            {
+                { "userId", 1 },
+                { "userName", "John Doe" }
+            }
         };
 
         return Task.FromResult<AuthenticationResult?>(authResult);
@@ -36,7 +46,7 @@ public class SampleServerSideAuthenticationService(ILocalStorageService localSto
         {
             IsSuccess = true,
             JwtPair = jwt.BuildJwtPair()
-    };
+        };
 
         return Task.FromResult<AuthenticationResult?>(authResult);
     }
