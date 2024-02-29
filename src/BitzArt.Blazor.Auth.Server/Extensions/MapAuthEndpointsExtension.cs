@@ -50,7 +50,6 @@ public static class MapAuthEndpointsExtension
             IAuthenticationService authService, [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {
             var context = httpContextAccessor.HttpContext;
-
             using StreamReader reader = new(context!.Request.Body);
             var bodyAsString = await reader.ReadToEndAsync();
 

@@ -19,6 +19,17 @@ public class SampleServerSideAuthenticationService(ILocalStorageService localSto
         return Task.FromResult<AuthenticationResult?>(authResult);
     }
 
+    public override Task<AuthenticationResult?> GetSignUpResultAsync(SignUpPayload signUpPayload)
+    {
+        var authResult = new AuthenticationResult
+        {
+            IsSuccess = true,
+            JwtPair = jwt.BuildJwtPair()
+        };
+
+        return Task.FromResult<AuthenticationResult?>(authResult);
+    }
+
     public override Task<AuthenticationResult?> GetRefreshJwtPairResultAsync(string refreshToken)
     {
         var authResult = new AuthenticationResult

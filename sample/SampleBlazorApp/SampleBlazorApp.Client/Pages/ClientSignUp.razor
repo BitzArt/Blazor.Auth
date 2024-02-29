@@ -1,0 +1,23 @@
+﻿@page "/client-sign-up"
+
+@rendermode @(new InteractiveWebAssemblyRenderMode(false))
+
+@inject NavigationManager NavigationManager
+@inject IAuthenticationService AuthenticationService
+
+<PageTitle>Sign Up</PageTitle>
+
+<h3>Interactive WebAssembly (prerendering off)</h3>
+
+<button type="submit" class="w-100 btn btn-lg btn-primary" @onclick="SignUpAsync">Sign Up</button>
+
+@code {
+    private async Task SignUpAsync()
+    {
+        var payload = new SignUpPayload();
+
+        var result = await AuthenticationService.SignUpAsync(payload);
+
+        NavigationManager.NavigateTo("/", true);
+    }
+}
