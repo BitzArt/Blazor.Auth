@@ -14,33 +14,36 @@ public class BlazorAuthenticationStateProvider(
     : AuthenticationStateProvider
 {
     private ILogger _logger = loggerFactory.CreateLogger("Blazor.Auth.AuthenticationState");
-    private static JsonSerializerOptions _logSerializerOptions = new()
-    {
-        WriteIndented = true,
-    };
-
     protected readonly IIdentityClaimsService ClaimsService = claimsService;
+    private static JsonSerializerOptions _logSerializerOptions = new() { WriteIndented = true };
+    private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         _logger.LogDebug("GetAuthenticationStateAsync was called");
 
-        JwtPair? jwtPair = null;
+        string? jwtPairJson;
 
         try
         {
-            var jwtPairJson = await localStorage.GetItemAsStringAsync(Constants.JwtPairStoragePropertyName);
-            jwtPair = JsonSerializer.Deserialize<JwtPair>(jwtPairJson!, BlazorAuthJsonSerializerOptions.GetOptions());
+            jwtPairJson = await localStorage.GetItemAsStringAsync(Constants.JwtPairStoragePropertyName);
         }
         catch (Exception)
         {
+            _logger.LogDebug("Local storage is not available");
+
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity("PrerenderAuth", "Unauthorized", "Unauthorized")));
         }
+
+        JwtPair? jwtPair = null;
+
+        if (jwtPairJson != null)
+            jwtPair = JsonSerializer.Deserialize<JwtPair>(jwtPairJson!, BlazorAuthJsonSerializerOptions.GetOptions());
 
         if (jwtPair is null) {
             _logger.LogDebug("JWT pair was not found");
 
-            return new AuthenticationState(new ClaimsPrincipal());
+            return UnauthorizedState;
         }
 
         if (string.IsNullOrEmpty(jwtPair.AccessToken) || IsExpired(jwtPair.AccessTokenExpiresAt))
@@ -48,19 +51,24 @@ public class BlazorAuthenticationStateProvider(
             if (string.IsNullOrEmpty(jwtPair.RefreshToken) || IsExpired(jwtPair.RefreshTokenExpiresAt))
             {
                 _logger.LogDebug("Access token was not found");
-
-                return new AuthenticationState(new ClaimsPrincipal());
+                return UnauthorizedState;
             }
 
-            var newJwtPair = await authService.RefreshAsync(jwtPair.RefreshToken);
+            var refreshResult = await authService.RefreshAsync(jwtPair.RefreshToken);
 
-            if (newJwtPair is null) {
+            if (refreshResult?.IsSuccess != true)
+            {
                 _logger.LogDebug("Could not refresh JWT pair");
-
-                return new AuthenticationState(new ClaimsPrincipal());
+                return UnauthorizedState;
             }
 
-            jwtPair = newJwtPair;
+            if (refreshResult.JwtPair is null)
+            {
+                _logger.LogDebug("Could not refresh JWT pair");
+                return UnauthorizedState;
+            }
+
+            jwtPair = refreshResult.JwtPair;
 
             _logger.LogDebug("JWT pair was successfully refreshed:\n{jwtPair}", JsonSerializer.Serialize(jwtPair, _logSerializerOptions));
         } else
@@ -68,17 +76,13 @@ public class BlazorAuthenticationStateProvider(
             _logger.LogDebug("Access token was found: '{token}'", jwtPair.AccessToken);
         }
 
-        var principal = ClaimsService.BuildClaimsPrincipal(jwtPair.AccessToken);
+        var principal = ClaimsService.BuildClaimsPrincipal(jwtPair.AccessToken!);
 
         return new AuthenticationState(principal);
     }
 
-    private bool IsExpired(DateTimeOffset? timestamp)
+    private static bool IsExpired(DateTimeOffset? timestamp)
     {
-        if (timestamp is null) return true;
-
-        if (DateTimeOffset.UtcNow >= timestamp) return true;
-
-        return false;
+        return timestamp == null || DateTimeOffset.UtcNow >= timestamp;
     }
 }

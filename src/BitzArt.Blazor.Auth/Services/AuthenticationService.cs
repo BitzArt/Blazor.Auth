@@ -8,69 +8,114 @@ public class AuthenticationService(ILocalStorageService localStorage) : IAuthent
 {
     public ILocalStorageService LocalStorage = localStorage;
 
-    public virtual async Task<JwtPair?> SignInAsync(object signInPayload)
+    public virtual async Task<AuthenticationResult?> SignInAsync(object signInPayload)
     {
-        var jwtPair = await GetJwtPairAsync(signInPayload);
+        var authResult = await GetJwtPairAsync(signInPayload);
 
-        if (jwtPair == null) return null;
+        if (authResult?.IsSuccess == true) await StoreJwtPairInLocalStorage(authResult);
 
-        var jwtPairJson = JsonSerializer.Serialize(jwtPair, BlazorAuthJsonSerializerOptions.GetOptions());
-        await LocalStorage.SetItemAsStringAsync(Constants.JwtPairStoragePropertyName, jwtPairJson);
-
-        return jwtPair;
+        return authResult;
     }
 
-    public async Task<JwtPair?> RefreshAsync(string refreshToken)
+    public virtual async Task<AuthenticationResult?> SignUpAsync(object signUpPayload)
     {
-        var jwtPair = await RefreshJwtPairAsync(refreshToken);
+        var authResult = await GetSignUpResultAsync(signUpPayload);
 
-        if (jwtPair is null) return null;
+        if (authResult?.IsSuccess == true) await StoreJwtPairInLocalStorage(authResult);
 
-        var jwtPairJson = JsonSerializer.Serialize(jwtPair, BlazorAuthJsonSerializerOptions.GetOptions());
-        await LocalStorage.SetItemAsStringAsync(Constants.JwtPairStoragePropertyName, jwtPairJson);
-
-        return jwtPair;
+        return authResult;
     }
 
-    public virtual Task<JwtPair?> RefreshJwtPairAsync(string refreshToken)
+    public async Task<AuthenticationResult?> RefreshAsync(string refreshToken)
     {
-        return Task.FromResult((JwtPair?)null);
+        var authResult = await RefreshJwtPairAsync(refreshToken);
+
+        if (authResult?.IsSuccess == true) await StoreJwtPairInLocalStorage(authResult);
+
+        return authResult;
     }
 
-    public virtual Task<JwtPair?> GetJwtPairAsync(object signInPayload)
+    private async Task StoreJwtPairInLocalStorage(AuthenticationResult authResult)
+    {
+        if (authResult.JwtPair != null)
+        {
+            var jwtPairJson = JsonSerializer.Serialize(authResult.JwtPair, BlazorAuthJsonSerializerOptions.GetOptions());
+            await LocalStorage.SetItemAsStringAsync(Constants.JwtPairStoragePropertyName, jwtPairJson);
+        }
+    }
+
+    public virtual Task<AuthenticationResult?> GetJwtPairAsync(object signInPayload)
     {
         throw new NotImplementedException();
+    }
+
+    public virtual Task<AuthenticationResult?> GetSignUpResultAsync(object signUpPayload)
+    {
+        throw new NotImplementedException();
+    }
+
+    public virtual Task<AuthenticationResult?> RefreshJwtPairAsync(string refreshToken)
+    {
+        return Task.FromResult((AuthenticationResult?)null);
     }
 
     public virtual Type? GetSignInPayloadType()
     {
         return null;
     }
+
+    public virtual Type? GetSignUpPayloadType()
+    {
+        return null;
+    }
 }
 
-public class AuthenticationService<TSignInPayload>(ILocalStorageService localStorage) 
+public class AuthenticationService<TSignInPayload, TSignUpPayload>(ILocalStorageService localStorage)
     : AuthenticationService(localStorage)
 {
-    public async Task<JwtPair?> SignInAsync(TSignInPayload signInPayload)
+    public async Task<AuthenticationResult?> SignInAsync(TSignInPayload signInPayload)
     {
         return await SignInAsync((object)signInPayload);
     }
 
-    public virtual Task<JwtPair?> GetJwtPairAsync(TSignInPayload signInPayload)
+    public async Task<AuthenticationResult?> SignUpAsync(TSignUpPayload signUpPayload)
+    {
+        return await SignUpAsync((object)signUpPayload);
+    }
+
+    public virtual Task<AuthenticationResult?> GetJwtPairAsync(TSignInPayload signInPayload)
     {
         throw new NotImplementedException();
     }
 
-    public override async Task<JwtPair?> GetJwtPairAsync(object signInPayload)
+    public override async Task<AuthenticationResult?> GetJwtPairAsync(object signInPayload)
     {
-        if(signInPayload is not TSignInPayload signInPayloadCasted)
-            throw new Exception($"Sign in payload is not {typeof(TSignInPayload).Name}.");
+        if (signInPayload is not TSignInPayload signInPayloadCasted)
+            throw new Exception($"Sign-in payload is not {typeof(TSignInPayload).Name} type");
 
         return await GetJwtPairAsync(signInPayloadCasted);
+    }
+
+    public virtual Task<AuthenticationResult?> GetSignUpResultAsync(TSignUpPayload signIpPayload)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override async Task<AuthenticationResult?> GetSignUpResultAsync(object signUpPayload)
+    {
+        if (signUpPayload is not TSignUpPayload signUpPayloadCasted)
+            throw new Exception($"Sign-up payload is not {typeof(TSignUpPayload).Name} type");
+
+        return await GetSignUpResultAsync(signUpPayloadCasted);
     }
 
     public override Type? GetSignInPayloadType()
     {
         return typeof(TSignInPayload);
+    }
+
+    public override Type? GetSignUpPayloadType()
+    {
+        return typeof(TSignUpPayload);
     }
 }

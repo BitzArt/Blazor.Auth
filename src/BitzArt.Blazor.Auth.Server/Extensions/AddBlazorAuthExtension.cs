@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BitzArt.Blazor.Auth;
 
@@ -19,17 +19,13 @@ public static class AddBlazorAuthExtension
         where TIdentityClaimsService : class, IIdentityClaimsService
         where TServerSideAuthenticationService : class, IAuthenticationService
     {
-        services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
-        services.AddScoped<IAuthenticationService, TServerSideAuthenticationService>();
-
         services.AddHttpContextAccessor();
-
         services.AddCascadingAuthenticationState();
-
         services.AddBlazoredLocalStorage();
 
+        services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
+        services.AddScoped<IAuthenticationService, TServerSideAuthenticationService>();
         services.AddScoped<AuthenticationStateProvider, BlazorAuthenticationStateProvider>();
-
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 
         services.ConfigureHttpJsonOptions(opts =>
@@ -38,7 +34,6 @@ public static class AddBlazorAuthExtension
             opts.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             opts.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         });
-
 
         return services;
     }

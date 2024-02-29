@@ -4,24 +4,38 @@ using System.Text.Json;
 
 namespace BitzArt.Blazor.Auth;
 
-public class ClientSideAuthenticationService(ILocalStorageService localStorage, HttpClient httpClient) 
+public class ClientSideAuthenticationService(
+    ILocalStorageService localStorage,
+    HttpClient httpClient)
     : AuthenticationService(localStorage)
 {
-    public override async Task<JwtPair?> GetJwtPairAsync(object signInPayload)
+    public override async Task<AuthenticationResult?> GetJwtPairAsync(object signInPayload)
     {
         var response = await httpClient.PostAsJsonAsync("/api/sign-in", signInPayload);
 
-        if (!response.IsSuccessStatusCode) 
+        if (!response.IsSuccessStatusCode)
             throw new Exception($"Server responded with status code '{response.StatusCode}'");
 
         var content = await response.Content.ReadAsStringAsync();
+        var authResult = JsonSerializer.Deserialize<AuthenticationResult>(content, BlazorAuthJsonSerializerOptions.GetOptions());
 
-        var jwtPair = JsonSerializer.Deserialize<JwtPair>(content, BlazorAuthJsonSerializerOptions.GetOptions());
-        
-        return jwtPair;
+        return authResult;
     }
 
-    public override async Task<JwtPair?> RefreshJwtPairAsync(string refreshToken)
+    public override async Task<AuthenticationResult?> GetSignUpResultAsync(object signUpPayload)
+    {
+        var response = await httpClient.PostAsJsonAsync("/api/sign-up", signUpPayload);
+
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Server responded with status code '{response.StatusCode}'");
+
+        var content = await response.Content.ReadAsStringAsync();
+        var authResult = JsonSerializer.Deserialize<AuthenticationResult>(content, BlazorAuthJsonSerializerOptions.GetOptions());
+
+        return authResult;
+    }
+
+    public override async Task<AuthenticationResult?> RefreshJwtPairAsync(string refreshToken)
     {
         var response = await httpClient.PostAsJsonAsync("/api/refresh", refreshToken);
 
@@ -29,9 +43,8 @@ public class ClientSideAuthenticationService(ILocalStorageService localStorage, 
             throw new Exception($"Server responded with status code '{response.StatusCode}'");
 
         var content = await response.Content.ReadAsStringAsync();
+        var authResult = JsonSerializer.Deserialize<AuthenticationResult>(content, BlazorAuthJsonSerializerOptions.GetOptions());
 
-        var jwtPair = JsonSerializer.Deserialize<JwtPair>(content, BlazorAuthJsonSerializerOptions.GetOptions());
-
-        return jwtPair;
+        return authResult;
     }
 }
