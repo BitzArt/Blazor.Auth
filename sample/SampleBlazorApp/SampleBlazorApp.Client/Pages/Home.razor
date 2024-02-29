@@ -1,7 +1,15 @@
 ﻿@page "/"
+@rendermode @(new InteractiveServerRenderMode(false))
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h3>Interactive Server (prerendering off)</h3>
 
-Welcome to your new app.
+<AuthorizeView>
+    <NotAuthorized>
+        <h1>You are not authenticated</h1>
+    </NotAuthorized>
+    <Authorized>
+        <h1>You are authenticated</h1>
+    </Authorized>
+</AuthorizeView>

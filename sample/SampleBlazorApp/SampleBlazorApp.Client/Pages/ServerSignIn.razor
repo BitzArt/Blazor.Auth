@@ -2,7 +2,6 @@
 
 @rendermode @(new InteractiveServerRenderMode(false))
 
-@inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @inject IAuthenticationService AuthenticationService
 
@@ -17,6 +16,6 @@
 
         var result = await AuthenticationService.SignInAsync(payload);
 
-        // NavigationManager.NavigateTo("/", true);
+        NavigationManager.NavigateTo("/", true);
     }
 }

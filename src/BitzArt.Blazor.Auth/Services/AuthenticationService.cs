@@ -86,7 +86,7 @@ public class AuthenticationService<TSignInPayload, TSignUpPayload>(ILocalStorage
         return await SignUpAsync((object)signUpPayload);
     }
 
-    public virtual Task<AuthenticationResult?> GetJwtPairAsync(TSignInPayload signInPayload)
+    public virtual Task<AuthenticationResult?> GetSignInResultAsync(TSignInPayload signInPayload)
     {
         throw new NotImplementedException();
     }
@@ -96,7 +96,7 @@ public class AuthenticationService<TSignInPayload, TSignUpPayload>(ILocalStorage
         if (signInPayload is not TSignInPayload signInPayloadCasted)
             throw new Exception($"Sign-in payload is not {typeof(TSignInPayload).Name} type");
 
-        return await GetJwtPairAsync(signInPayloadCasted);
+        return await GetSignInResultAsync(signInPayloadCasted);
     }
 
     public virtual Task<AuthenticationResult?> GetSignUpResultAsync(TSignUpPayload signIpPayload)

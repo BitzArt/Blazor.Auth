@@ -5,18 +5,28 @@ using SampleBlazorApp.Services;
 
 namespace BitzArt.Blazor.Auth;
 
-public class SampleServerSideAuthenticationService(ILocalStorageService localStorage, JwtService jwt) 
-    : AuthenticationService<SignInPayload>(localStorage)
+public class SampleServerSideAuthenticationService(ILocalStorageService localStorage, JwtService jwt)
+    : AuthenticationService<SignInPayload, SignUpPayload>(localStorage)
 {
-    public override Task<JwtPair?> GetJwtPairAsync(SignInPayload signInPayload)
+    public override Task<AuthenticationResult?> GetSignInResultAsync(SignInPayload signInPayload)
     {
-        var jwtPair = jwt.BuildJwtPair();
-        return Task.FromResult<JwtPair?>(jwtPair);
+        var authResult = new AuthenticationResult
+        {
+            IsSuccess = true,
+            JwtPair = jwt.BuildJwtPair()
+        };
+
+        return Task.FromResult<AuthenticationResult?>(authResult);
     }
 
-    public override Task<JwtPair?> RefreshJwtPairAsync(string refreshToken)
+    public override Task<AuthenticationResult?> GetRefreshJwtPairResultAsync(string refreshToken)
     {
-        var jwtPair = jwt.BuildJwtPair();
-        return Task.FromResult<JwtPair?>(jwtPair);
+        var authResult = new AuthenticationResult
+        {
+            IsSuccess = true,
+            JwtPair = jwt.BuildJwtPair()
+    };
+
+        return Task.FromResult<AuthenticationResult?>(authResult);
     }
 }

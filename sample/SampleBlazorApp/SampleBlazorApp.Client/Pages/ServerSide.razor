@@ -4,7 +4,7 @@
 
 <PageTitle>Server Side</PageTitle>
 
-Server Side
+<h3>Interactive Server (prerendering off)</h3>
 
 <AuthorizeView>
     <NotAuthorized>
@@ -12,6 +12,5 @@ Server Side
     </NotAuthorized>
     <Authorized>
         <h1>You are authenticated</h1>
-        @context.User.Identity?.IsAuthenticated
     </Authorized>
 </AuthorizeView>
