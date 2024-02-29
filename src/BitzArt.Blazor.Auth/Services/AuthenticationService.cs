@@ -12,7 +12,8 @@ public class AuthenticationService(ILocalStorageService localStorage) : IAuthent
     {
         var authResult = await GetJwtPairAsync(signInPayload);
 
-        if (authResult?.IsSuccess == true) await StoreJwtPairInLocalStorage(authResult);
+        if (authResult?.IsSuccess == true)
+            await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
 
         return authResult;
     }
@@ -21,7 +22,8 @@ public class AuthenticationService(ILocalStorageService localStorage) : IAuthent
     {
         var authResult = await GetSignUpResultAsync(signUpPayload);
 
-        if (authResult?.IsSuccess == true) await StoreJwtPairInLocalStorage(authResult);
+        if (authResult?.IsSuccess == true)
+            await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
 
         return authResult;
     }
@@ -30,17 +32,18 @@ public class AuthenticationService(ILocalStorageService localStorage) : IAuthent
     {
         var authResult = await RefreshJwtPairAsync(refreshToken);
 
-        if (authResult?.IsSuccess == true) await StoreJwtPairInLocalStorage(authResult);
+        if (authResult?.IsSuccess == true)
+            await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
 
         return authResult;
     }
 
-    private async Task StoreJwtPairInLocalStorage(AuthenticationResult authResult)
+    private async Task SetToLocalStorage(string key, JwtPair? jwtPair)
     {
-        if (authResult.JwtPair != null)
+        if (jwtPair is not null)
         {
-            var jwtPairJson = JsonSerializer.Serialize(authResult.JwtPair, BlazorAuthJsonSerializerOptions.GetOptions());
-            await LocalStorage.SetItemAsStringAsync(Constants.JwtPairStoragePropertyName, jwtPairJson);
+            var jwtPairJson = JsonSerializer.Serialize(jwtPair, BlazorAuthJsonSerializerOptions.GetOptions());
+            await LocalStorage.SetItemAsStringAsync(key, jwtPairJson);
         }
     }
 
