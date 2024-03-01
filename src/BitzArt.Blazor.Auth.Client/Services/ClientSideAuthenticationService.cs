@@ -12,13 +12,13 @@ public class ClientSideAuthenticationService(
         var response = await httpClient.PostAsJsonAsync("/api/sign-in", signInPayload);
 
         if (!response.IsSuccessStatusCode)
-            throw new Exception($"Server responded with status code '{response.StatusCode}'");
+            throw new Exception($"Server responded with status code '{response.StatusCode}'.");
 
         var content = await response.Content.ReadAsStringAsync();
         var authResult = JsonSerializer.Deserialize<AuthenticationResult>(content, BlazorAuthJsonSerializerOptions.Options);
 
         return authResult is null
-            ? throw new Exception("Server responded with null authentication result")
+            ? throw new Exception("Server responded with null authentication result.")
             : authResult;
     }
 
@@ -27,13 +27,13 @@ public class ClientSideAuthenticationService(
         var response = await httpClient.PostAsJsonAsync("/api/sign-up", signUpPayload);
 
         if (!response.IsSuccessStatusCode)
-            throw new Exception($"Server responded with status code '{response.StatusCode}'");
+            throw new Exception($"Server responded with status code '{response.StatusCode}'.");
 
         var content = await response.Content.ReadAsStringAsync();
         var authResult = JsonSerializer.Deserialize<AuthenticationResult>(content, BlazorAuthJsonSerializerOptions.Options);
 
         return authResult is null
-            ? throw new Exception("Server responded with null authentication result")
+            ? throw new Exception("Server responded with null authentication result.")
             : authResult;
     }
 
@@ -42,13 +42,13 @@ public class ClientSideAuthenticationService(
         var response = await httpClient.PostAsJsonAsync("/api/refresh", refreshToken);
 
         if (!response.IsSuccessStatusCode)
-            throw new Exception($"Server responded with status code '{response.StatusCode}'");
+            throw new Exception($"Server responded with status code '{response.StatusCode}'.");
 
         var content = await response.Content.ReadAsStringAsync();
         var authResult = JsonSerializer.Deserialize<AuthenticationResult>(content, BlazorAuthJsonSerializerOptions.Options);
 
         return authResult is null
-            ? throw new Exception("Server responded with null authentication result")
+            ? throw new Exception("Server responded with null authentication result.")
             : authResult;
     }
 }

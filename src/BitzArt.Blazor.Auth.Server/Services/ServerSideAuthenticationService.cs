@@ -6,7 +6,7 @@ public class ServerSideAuthenticationService<TSignInPayload, TSignUpPayload>()
     public override async Task<AuthenticationResult> SignInAsync(object signInPayload)
     {
         if (signInPayload is not TSignInPayload signInPayloadCasted)
-            throw new Exception($"Sign-in payload is not {typeof(TSignInPayload).Name} type");
+            throw new Exception($"Sign-in payload is not {typeof(TSignInPayload).Name} type.");
 
         return await SignInAsync(signInPayloadCasted);
     }
@@ -24,7 +24,7 @@ public class ServerSideAuthenticationService<TSignInPayload, TSignUpPayload>()
     public override async Task<AuthenticationResult> SignUpAsync(object signUpPayload)
     {
         if (signUpPayload is not TSignUpPayload signUpPayloadCasted)
-            throw new Exception($"Sign-up payload is not {typeof(TSignUpPayload).Name} type");
+            throw new Exception($"Sign-up payload is not {typeof(TSignUpPayload).Name} type.");
 
         return await SignUpAsync(signUpPayloadCasted);
     }

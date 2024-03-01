@@ -20,7 +20,7 @@ public class BlazorAuthenticationStateProvider(
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        _logger.LogDebug("GetAuthenticationStateAsync was called");
+        _logger.LogDebug("GetAuthenticationStateAsync was called.");
 
         string? jwtPairJson;
 
@@ -30,9 +30,7 @@ public class BlazorAuthenticationStateProvider(
         }
         catch (Exception)
         {
-            _logger.LogDebug("Local storage is not available. Returning Prerender {authState}", nameof(AuthenticationState));
-
-            //return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity("PrerenderAuth", "Unauthorized", "Unauthorized")));
+            _logger.LogDebug("Local storage is not available.");
             return UnauthorizedState;
         }
 
@@ -52,7 +50,7 @@ public class BlazorAuthenticationStateProvider(
         {
             if (string.IsNullOrEmpty(jwtPair.RefreshToken) || IsExpired(jwtPair.RefreshTokenExpiresAt))
             {
-                _logger.LogDebug("Access token was not found");
+                _logger.LogDebug("Access token was not found.");
                 return UnauthorizedState;
             }
 
@@ -67,7 +65,7 @@ public class BlazorAuthenticationStateProvider(
 
             if (refreshResult.JwtPair is null)
             {
-                _logger.LogDebug("Refresh JWT pair returned {resultType} with {jwtPair}: null",
+                _logger.LogDebug("Refresh JWT pair returned {resultType} with {jwtPair}: null.",
                     nameof(AuthenticationResult), nameof(AuthenticationResult.JwtPair));
                 return UnauthorizedState;
             }
@@ -78,7 +76,7 @@ public class BlazorAuthenticationStateProvider(
         }
         else
         {
-            _logger.LogDebug("Access token was found: '{token}'", jwtPair.AccessToken);
+            _logger.LogDebug("Access token was found: '{token}'.", jwtPair.AccessToken);
         }
 
         var principal = ClaimsService.BuildClaimsPrincipal(jwtPair.AccessToken!);

@@ -15,7 +15,7 @@ public static class MapAuthEndpointsExtension
             [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {
             var type = authService.GetSignInPayloadType() ?? throw new NotImplementedException();
-            
+
             var context = httpContextAccessor.HttpContext;
             using StreamReader reader = new(context!.Request.Body);
             var bodyAsString = await reader.ReadToEndAsync();
@@ -31,7 +31,7 @@ public static class MapAuthEndpointsExtension
             [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {
             var type = authService.GetSignUpPayloadType() ?? throw new NotImplementedException();
-            
+
             var context = httpContextAccessor.HttpContext;
             using StreamReader reader = new(context!.Request.Body);
             var bodyAsString = await reader.ReadToEndAsync();

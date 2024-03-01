@@ -7,8 +7,8 @@ internal class UserService(IAuthenticationService auth, ILocalStorageService loc
 {
     public virtual async Task<AuthenticationResult> SignInAsync(object signInPayload)
     {
-        var authResult = await auth.SignInAsync(signInPayload) ?? throw new Exception("Authentication result is null");
-        
+        var authResult = await auth.SignInAsync(signInPayload) ?? throw new Exception("Authentication result is null.");
+
         if (authResult.IsSuccess)
             await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
 
@@ -17,7 +17,7 @@ internal class UserService(IAuthenticationService auth, ILocalStorageService loc
 
     public virtual async Task<AuthenticationResult> SignUpAsync(object signUpPayload)
     {
-        var authResult = await auth.SignUpAsync(signUpPayload) ?? throw new Exception("Authentication result is null");
+        var authResult = await auth.SignUpAsync(signUpPayload) ?? throw new Exception("Authentication result is null.");
 
         if (authResult?.IsSuccess == true)
             await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
@@ -27,7 +27,7 @@ internal class UserService(IAuthenticationService auth, ILocalStorageService loc
 
     public async Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
     {
-        var authResult = await auth.RefreshJwtPairAsync(refreshToken) ?? throw new Exception("Authentication result is null");
+        var authResult = await auth.RefreshJwtPairAsync(refreshToken) ?? throw new Exception("Authentication result is null.");
 
         if (authResult?.IsSuccess == true)
             await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
