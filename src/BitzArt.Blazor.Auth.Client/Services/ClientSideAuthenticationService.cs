@@ -1,37 +1,54 @@
-﻿using Blazored.LocalStorage;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.Text.Json;
 
 namespace BitzArt.Blazor.Auth;
 
-public class ClientSideAuthenticationService(ILocalStorageService localStorage, HttpClient httpClient) 
-    : AuthenticationService(localStorage)
+public class ClientSideAuthenticationService(
+    HttpClient httpClient)
+    : AuthenticationService
 {
-    public override async Task<JwtPair?> GetJwtPairAsync(object signInPayload)
+    public override async Task<AuthenticationResult> SignInAsync(object signInPayload)
     {
         var response = await httpClient.PostAsJsonAsync("/api/sign-in", signInPayload);
 
-        if (!response.IsSuccessStatusCode) 
-            throw new Exception($"Server responded with status code '{response.StatusCode}'");
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Server responded with status code '{response.StatusCode}'.");
 
         var content = await response.Content.ReadAsStringAsync();
+        var authResult = JsonSerializer.Deserialize<AuthenticationResult>(content, BlazorAuthJsonSerializerOptions.Options);
 
-        var jwtPair = JsonSerializer.Deserialize<JwtPair>(content, BlazorAuthJsonSerializerOptions.GetOptions());
-        
-        return jwtPair;
+        return authResult is null
+            ? throw new Exception("Server responded with null authentication result.")
+            : authResult;
     }
 
-    public override async Task<JwtPair?> RefreshJwtPairAsync(string refreshToken)
+    public override async Task<AuthenticationResult> SignUpAsync(object signUpPayload)
+    {
+        var response = await httpClient.PostAsJsonAsync("/api/sign-up", signUpPayload);
+
+        if (!response.IsSuccessStatusCode)
+            throw new Exception($"Server responded with status code '{response.StatusCode}'.");
+
+        var content = await response.Content.ReadAsStringAsync();
+        var authResult = JsonSerializer.Deserialize<AuthenticationResult>(content, BlazorAuthJsonSerializerOptions.Options);
+
+        return authResult is null
+            ? throw new Exception("Server responded with null authentication result.")
+            : authResult;
+    }
+
+    public override async Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
     {
         var response = await httpClient.PostAsJsonAsync("/api/refresh", refreshToken);
 
         if (!response.IsSuccessStatusCode)
-            throw new Exception($"Server responded with status code '{response.StatusCode}'");
+            throw new Exception($"Server responded with status code '{response.StatusCode}'.");
 
         var content = await response.Content.ReadAsStringAsync();
+        var authResult = JsonSerializer.Deserialize<AuthenticationResult>(content, BlazorAuthJsonSerializerOptions.Options);
 
-        var jwtPair = JsonSerializer.Deserialize<JwtPair>(content, BlazorAuthJsonSerializerOptions.GetOptions());
-
-        return jwtPair;
+        return authResult is null
+            ? throw new Exception("Server responded with null authentication result.")
+            : authResult;
     }
 }

@@ -1,22 +1,29 @@
-﻿
-using Blazored.LocalStorage;
-using SampleBlazorApp;
+﻿using SampleBlazorApp;
 using SampleBlazorApp.Services;
 
 namespace BitzArt.Blazor.Auth;
 
-public class SampleServerSideAuthenticationService(ILocalStorageService localStorage, JwtService jwt) 
-    : AuthenticationService<SignInPayload>(localStorage)
+public class SampleServerSideAuthenticationService(JwtService jwtService)
+    : ServerSideAuthenticationService<SignInPayload, SignUpPayload>()
 {
-    public override Task<JwtPair?> GetJwtPairAsync(SignInPayload signInPayload)
+    protected override Task<AuthenticationResult> GetSignInResultAsync(SignInPayload signInPayload)
     {
-        var jwtPair = jwt.BuildJwtPair();
-        return Task.FromResult<JwtPair?>(jwtPair);
+        var authResult = AuthenticationResult.Success(jwtService.BuildJwtPair());
+
+        return Task.FromResult(authResult);
     }
 
-    public override Task<JwtPair?> RefreshJwtPairAsync(string refreshToken)
+    protected override Task<AuthenticationResult> GetSignUpResultAsync(SignUpPayload signUpPayload)
     {
-        var jwtPair = jwt.BuildJwtPair();
-        return Task.FromResult<JwtPair?>(jwtPair);
+        var authResult = AuthenticationResult.Success(jwtService.BuildJwtPair());
+
+        return Task.FromResult(authResult);
+    }
+
+    public override Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
+    {
+        var authResult = AuthenticationResult.Success(jwtService.BuildJwtPair());
+
+        return Task.FromResult(authResult);
     }
 }

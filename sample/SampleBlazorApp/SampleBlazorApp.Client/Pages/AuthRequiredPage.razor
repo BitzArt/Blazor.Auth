@@ -1,0 +1,18 @@
+﻿@page "/auth-required"
+@inherits PageBase
+@attribute [Authorize]
+
+@using System.Text.Json
+
+<PageTitle>Auth Required</PageTitle>
+
+<h1>Auth Required</h1>
+
+<AuthorizeView>
+    <pre>
+        @JsonSerializer.Serialize(@context
+            .User.Claims.Select(x => new
+                { x.Type, x.Value, x.Issuer, x.Subject?.Name, x.ValueType }
+            ), new JsonSerializerOptions { WriteIndented = true })
+    </pre>
+</AuthorizeView>

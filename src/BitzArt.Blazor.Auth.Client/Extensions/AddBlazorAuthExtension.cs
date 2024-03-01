@@ -23,10 +23,16 @@ public static class AddBlazorAuthExtension
     {
         services.AddAuthorizationCore();
         services.AddCascadingAuthenticationState();
-        services.AddScoped<IAuthenticationService, TAuthenticationService>();
+        services.AddBlazoredLocalStorage();
+
         services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
         services.AddScoped<AuthenticationStateProvider, BlazorAuthenticationStateProvider>();
-        services.AddBlazoredLocalStorage();
+
+        // UserService
+        services.AddScoped<IUserService, UserService>();
+
+        // AuthenticationService
+        services.AddScoped<IAuthenticationService, TAuthenticationService>();
 
         return services;
     }

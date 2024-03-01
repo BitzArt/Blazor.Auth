@@ -1,0 +1,22 @@
+﻿@page "/sign-up"
+@inherits PageBase
+
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+
+<PageTitle>Sign Up</PageTitle>
+
+<h1>Sign Up</h1>
+
+<button type="submit" class="w-100 btn btn-lg btn-primary" @onclick="SignUpAsync">Sign Up</button>
+
+@code {
+    private async Task SignUpAsync()
+    {
+        var payload = new SignUpPayload();
+
+        var result = await UserService.SignUpAsync(payload);
+
+        NavigationManager.NavigateTo("/", true);
+    }
+}

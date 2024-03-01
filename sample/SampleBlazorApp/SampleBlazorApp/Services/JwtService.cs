@@ -10,7 +10,6 @@ public class JwtService
 {
     private readonly JwtSecurityTokenHandler _tokenHandler;
     private readonly SigningCredentials _signingCredentials;
-    private readonly TokenValidationParameters _refreshTokenValidationParameters;
     private readonly TimeSpan _accessTokenDuration;
     private readonly TimeSpan _refreshTokenDuration;
 
@@ -33,19 +32,6 @@ public class JwtService
         var privateSecurityKey = new RsaSecurityKey(privateRsa);
 
         _signingCredentials = new SigningCredentials(privateSecurityKey, SecurityAlgorithms.RsaSha256);
-
-        var publicRsa = RSA.Create();
-        var publicKey = Convert.FromBase64String(options.PublicKey!);
-        publicRsa.ImportRSAPublicKey(publicKey, out _);
-
-        var publicSecurityKey = new RsaSecurityKey(publicRsa);
-
-        _refreshTokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateAudience = false,
-            ValidateIssuer = false,
-            IssuerSigningKey = publicSecurityKey
-        };
 
         _accessTokenDuration = options.AccessTokenDuration;
         _refreshTokenDuration = options.RefreshTokenDuration;
@@ -81,8 +67,8 @@ public class JwtService
         return new JwtPair
         {
             AccessToken = accessToken,
-            RefreshToken = refreshToken, 
-            AccessTokenExpiresAt = accessTokenExpiresAt, 
+            RefreshToken = refreshToken,
+            AccessTokenExpiresAt = accessTokenExpiresAt,
             RefreshTokenExpiresAt = refreshTokenExpiresAt
         };
     }
@@ -92,8 +78,8 @@ internal class JwtException(string errorMessage, Exception? innerException = nul
 
 internal class JwtOptions
 {
-    public string PublicKey { get; set; }
-    public string PrivateKey { get; set; }
+    public required string PublicKey { get; set; }
+    public required string PrivateKey { get; set; }
     public TimeSpan AccessTokenDuration { get; set; }
     public TimeSpan RefreshTokenDuration { get; set; }
 }
