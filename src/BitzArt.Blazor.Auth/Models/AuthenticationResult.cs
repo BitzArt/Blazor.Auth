@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using System.Text.Json;
 
 namespace BitzArt.Blazor.Auth;
 
@@ -13,8 +12,8 @@ public class AuthenticationResult
     public Dictionary<string, object>? Data { get; set; }
 
     public AuthenticationResult(
-        bool? isSuccess = null, 
-        JwtPair? jwtPair = null, 
+        bool? isSuccess = null,
+        JwtPair? jwtPair = null,
         string? errorMessage = null,
         Dictionary<string, object>? data = null)
     {

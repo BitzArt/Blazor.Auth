@@ -81,8 +81,8 @@ public class JwtService
         return new JwtPair
         {
             AccessToken = accessToken,
-            RefreshToken = refreshToken, 
-            AccessTokenExpiresAt = accessTokenExpiresAt, 
+            RefreshToken = refreshToken,
+            AccessTokenExpiresAt = accessTokenExpiresAt,
             RefreshTokenExpiresAt = refreshTokenExpiresAt
         };
     }

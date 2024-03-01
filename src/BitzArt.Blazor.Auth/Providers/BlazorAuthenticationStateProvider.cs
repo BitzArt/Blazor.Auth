@@ -10,7 +10,7 @@ public class BlazorAuthenticationStateProvider(
     ILoggerFactory loggerFactory,
     ILocalStorageService localStorage,
     IIdentityClaimsService claimsService,
-    IAuthenticationService authService) 
+    IAuthenticationService authService)
     : AuthenticationStateProvider
 {
     private ILogger _logger = loggerFactory.CreateLogger("Blazor.Auth.AuthenticationState");
@@ -40,7 +40,8 @@ public class BlazorAuthenticationStateProvider(
         if (jwtPairJson != null)
             jwtPair = JsonSerializer.Deserialize<JwtPair>(jwtPairJson!, BlazorAuthJsonSerializerOptions.GetOptions());
 
-        if (jwtPair is null) {
+        if (jwtPair is null)
+        {
             _logger.LogDebug("JWT pair was not found");
 
             return UnauthorizedState;
@@ -71,7 +72,8 @@ public class BlazorAuthenticationStateProvider(
             jwtPair = refreshResult.JwtPair;
 
             _logger.LogDebug("JWT pair was successfully refreshed:\n{jwtPair}", JsonSerializer.Serialize(jwtPair, _logSerializerOptions));
-        } else
+        }
+        else
         {
             _logger.LogDebug("Access token was found: '{token}'", jwtPair.AccessToken);
         }

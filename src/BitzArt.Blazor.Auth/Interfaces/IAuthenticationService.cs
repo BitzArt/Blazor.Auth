@@ -9,7 +9,7 @@ public interface IAuthenticationService
     public Task<AuthenticationResult?> GetSignInResultAsync(object signInPayload);
     public Task<AuthenticationResult?> GetSignUpResultAsync(object signUpPayload);
     public Task<AuthenticationResult?> GetRefreshJwtPairResultAsync(string refreshToken);
-    
+
     public Type? GetSignInPayloadType();
     public Type? GetSignUpPayloadType();
 }

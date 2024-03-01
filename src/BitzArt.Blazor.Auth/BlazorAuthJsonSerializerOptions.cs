@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace BitzArt.Blazor.Auth;
 
-public static class BlazorAuthJsonSerializerOptions 
+public static class BlazorAuthJsonSerializerOptions
 {
     private static JsonSerializerOptions _jsonSerializerOptions;
 

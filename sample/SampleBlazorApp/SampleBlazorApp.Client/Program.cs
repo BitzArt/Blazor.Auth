@@ -1,5 +1,4 @@
 using BitzArt.Blazor.Auth;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SampleBlazorApp.Services;
 
@@ -13,9 +12,6 @@ builder.Services.AddScoped(sp =>
     {
         BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
     });
-
-builder.Services.AddScoped<UserState>();
-builder.Services.AddScoped<TestService>();
 
 builder.Logging.AddFilter("Blazor.Auth", LogLevel.Debug);
 
