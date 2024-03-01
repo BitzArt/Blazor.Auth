@@ -1,7 +1,6 @@
-using SampleBlazorApp.Components;
 using BitzArt.Blazor.Auth;
+using SampleBlazorApp.Components;
 using SampleBlazorApp.Services;
-using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
