@@ -10,12 +10,12 @@ public class BlazorAuthenticationStateProvider(
     ILoggerFactory loggerFactory,
     ILocalStorageService localStorage,
     IIdentityClaimsService claimsService,
-    IAuthenticationService authService)
+    IUserService userService)
     : AuthenticationStateProvider
 {
-    private ILogger _logger = loggerFactory.CreateLogger("Blazor.Auth.AuthenticationState");
+    private readonly ILogger _logger = loggerFactory.CreateLogger("Blazor.Auth.AuthenticationState");
     protected readonly IIdentityClaimsService ClaimsService = claimsService;
-    private static JsonSerializerOptions _logSerializerOptions = new() { WriteIndented = true };
+    private static readonly JsonSerializerOptions _logSerializerOptions = new() { WriteIndented = true };
     private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
@@ -30,19 +30,20 @@ public class BlazorAuthenticationStateProvider(
         }
         catch (Exception)
         {
-            _logger.LogDebug("Local storage is not available");
+            _logger.LogDebug("Local storage is not available. Returning Prerender {authState}", nameof(AuthenticationState));
 
-            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity("PrerenderAuth", "Unauthorized", "Unauthorized")));
+            //return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity("PrerenderAuth", "Unauthorized", "Unauthorized")));
+            return UnauthorizedState;
         }
 
         JwtPair? jwtPair = null;
 
         if (jwtPairJson != null)
-            jwtPair = JsonSerializer.Deserialize<JwtPair>(jwtPairJson!, BlazorAuthJsonSerializerOptions.GetOptions());
+            jwtPair = JsonSerializer.Deserialize<JwtPair>(jwtPairJson!, BlazorAuthJsonSerializerOptions.Options);
 
         if (jwtPair is null)
         {
-            _logger.LogDebug("JWT pair was not found");
+            _logger.LogDebug("JWT pair was not found.");
 
             return UnauthorizedState;
         }
@@ -55,17 +56,19 @@ public class BlazorAuthenticationStateProvider(
                 return UnauthorizedState;
             }
 
-            var refreshResult = await authService.RefreshJetPairAsync(jwtPair.RefreshToken);
+            var refreshResult = await userService.RefreshJwtPairAsync(jwtPair.RefreshToken);
 
-            if (refreshResult?.IsSuccess != true)
+            if (!refreshResult.IsSuccess)
             {
-                _logger.LogDebug("Could not refresh JWT pair");
+                _logger.LogDebug("Refresh JWT pair returned {resultType}.{isSuccess}: false\nError Message: {errorMessage}",
+                    nameof(AuthenticationResult), nameof(AuthenticationResult.IsSuccess), refreshResult.ErrorMessage);
                 return UnauthorizedState;
             }
 
             if (refreshResult.JwtPair is null)
             {
-                _logger.LogDebug("Could not refresh JWT pair");
+                _logger.LogDebug("Refresh JWT pair returned {resultType} with {jwtPair}: null",
+                    nameof(AuthenticationResult), nameof(AuthenticationResult.JwtPair));
                 return UnauthorizedState;
             }
 

@@ -1,13 +1,13 @@
-﻿@page "/server-sign-in"
+﻿@page "/sign-in"
+@inherits PageBase
 
-@rendermode @(new InteractiveServerRenderMode(false))
-
+@inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
-@inject IAuthenticationService AuthenticationService
+@inject IUserService UserService
 
 <PageTitle>Sign In</PageTitle>
 
-<h3>Interactive Server (prerendering off)</h3>
+<h1>Sign In</h1>
 
 <button type="submit" class="w-100 btn btn-lg btn-primary" @onclick="SignInAsync">Sign In</button>
 
@@ -16,7 +16,7 @@
     {
         var payload = new SignInPayload();
 
-        var result = await AuthenticationService.SignInAsync(payload);
+        var result = await UserService.SignInAsync(payload);
 
         NavigationManager.NavigateTo("/", true);
     }

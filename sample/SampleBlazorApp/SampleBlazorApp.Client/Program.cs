@@ -1,10 +1,8 @@
 using BitzArt.Blazor.Auth;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using SampleBlazorApp.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddScoped<JwtService>();
 builder.Services.AddBlazorClientAuth();
 
 builder.Services.AddScoped(sp =>

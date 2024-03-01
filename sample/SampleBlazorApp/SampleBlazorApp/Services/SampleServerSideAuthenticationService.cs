@@ -1,53 +1,29 @@
-﻿
-using Blazored.LocalStorage;
-using SampleBlazorApp;
+﻿using SampleBlazorApp;
 using SampleBlazorApp.Services;
 
 namespace BitzArt.Blazor.Auth;
 
-public class SampleServerSideAuthenticationService(ILocalStorageService localStorage, JwtService jwt)
-    : AuthenticationService<SignInPayload, SignUpPayload>(localStorage)
+public class SampleServerSideAuthenticationService(JwtService jwtService)
+    : ServerSideAuthenticationService<SignInPayload, SignUpPayload>()
 {
-    public override Task<AuthenticationResult?> GetSignInResultAsync(SignInPayload signInPayload)
+    protected override Task<AuthenticationResult> GetSignInResultAsync(SignInPayload signInPayload)
     {
-        var authResult = new AuthenticationResult
-        {
-            IsSuccess = true,
-            JwtPair = jwt.BuildJwtPair(),
-            Data = new Dictionary<string, object>
-            {
-                { "userId", 1 },
-                { "userName", "John Doe" }
-            }
-        };
+        var authResult = AuthenticationResult.Success(jwtService.BuildJwtPair());
 
-        return Task.FromResult<AuthenticationResult?>(authResult);
+        return Task.FromResult(authResult);
     }
 
-    public override Task<AuthenticationResult?> GetSignUpResultAsync(SignUpPayload signUpPayload)
+    protected override Task<AuthenticationResult> GetSignUpResultAsync(SignUpPayload signUpPayload)
     {
-        var authResult = new AuthenticationResult
-        {
-            IsSuccess = true,
-            JwtPair = jwt.BuildJwtPair(),
-            Data = new Dictionary<string, object>
-            {
-                { "userId", 1 },
-                { "userName", "John Doe" }
-            }
-        };
+        var authResult = AuthenticationResult.Success(jwtService.BuildJwtPair());
 
-        return Task.FromResult<AuthenticationResult?>(authResult);
+        return Task.FromResult(authResult);
     }
 
-    public override Task<AuthenticationResult?> GetRefreshJwtPairResultAsync(string refreshToken)
+    public override Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
     {
-        var authResult = new AuthenticationResult
-        {
-            IsSuccess = true,
-            JwtPair = jwt.BuildJwtPair()
-        };
+        var authResult = AuthenticationResult.Success(jwtService.BuildJwtPair());
 
-        return Task.FromResult<AuthenticationResult?>(authResult);
+        return Task.FromResult(authResult);
     }
 }

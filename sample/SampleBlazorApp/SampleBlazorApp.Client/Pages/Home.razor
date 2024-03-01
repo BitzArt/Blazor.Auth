@@ -1,15 +1,6 @@
 ﻿@page "/"
-@rendermode @(new InteractiveServerRenderMode(false))
+@inherits PageBase
 
 <PageTitle>Home</PageTitle>
 
-<h3>Interactive Server (prerendering off)</h3>
-
-<AuthorizeView>
-    <NotAuthorized>
-        <h1>You are not authenticated</h1>
-    </NotAuthorized>
-    <Authorized>
-        <h1>You are authenticated</h1>
-    </Authorized>
-</AuthorizeView>
+<h1>Home</h1>

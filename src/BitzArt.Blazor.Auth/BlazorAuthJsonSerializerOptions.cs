@@ -5,17 +5,10 @@ namespace BitzArt.Blazor.Auth;
 
 public static class BlazorAuthJsonSerializerOptions
 {
-    private static JsonSerializerOptions _jsonSerializerOptions;
-
-    public static JsonSerializerOptions GetOptions()
+    public static readonly JsonSerializerOptions Options = new()
     {
-        _jsonSerializerOptions ??= new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        };
-
-        return _jsonSerializerOptions;
-    }
+        PropertyNameCaseInsensitive = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
 }
