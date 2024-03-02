@@ -6,6 +6,6 @@ internal class ClientSidePrerenderAuthenticationStateProvider : IPrerenderAuthen
 {
     public Task<AuthenticationState> GetPrerenderAuthenticationStateAsync()
     {
-        throw new NotImplementedException("Prerender logic is not available in client-side code.");
+        throw new InvalidOperationException("IPrerenderAuthenticationStateProvider is not available in client-side code.");
     }
 }

@@ -27,7 +27,7 @@ public class BlazorAuthenticationStateProvider(
         {
             cookies = await cookieService.GetAllAsync();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             _logger.LogDebug("Using IPrerenderAuthenticationStateProvider to retrieve user authentication state.");
             return await prerenderAuth.GetPrerenderAuthenticationStateAsync();
