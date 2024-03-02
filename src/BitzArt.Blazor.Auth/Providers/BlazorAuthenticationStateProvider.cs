@@ -1,91 +1,70 @@
-using Blazored.LocalStorage;
+using BitzArt.Blazor.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace BitzArt.Blazor.Auth;
 
 public class BlazorAuthenticationStateProvider(
     ILoggerFactory loggerFactory,
-    ILocalStorageService localStorage,
+    ICookieService cookieService,
+    IPrerenderAuthenticationStateProvider prerenderAuth,
     IIdentityClaimsService claimsService,
     IUserService userService)
     : AuthenticationStateProvider
 {
     private readonly ILogger _logger = loggerFactory.CreateLogger("Blazor.Auth.AuthenticationState");
     protected readonly IIdentityClaimsService ClaimsService = claimsService;
-    private static readonly JsonSerializerOptions _logSerializerOptions = new() { WriteIndented = true };
     private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         _logger.LogDebug("GetAuthenticationStateAsync was called.");
 
-        string? jwtPairJson;
+        IEnumerable<Cookie>? cookies = null;
 
         try
         {
-            jwtPairJson = await localStorage.GetItemAsStringAsync(Constants.JwtPairStoragePropertyName);
+            cookies = await cookieService.GetAllAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            _logger.LogDebug("Local storage is not available.");
-            return UnauthorizedState;
-        }
-
-        JwtPair? jwtPair = null;
-
-        if (jwtPairJson != null)
-            jwtPair = JsonSerializer.Deserialize<JwtPair>(jwtPairJson!, BlazorAuthJsonSerializerOptions.Options);
-
-        if (jwtPair is null)
-        {
-            _logger.LogDebug("JWT pair was not found.");
-
-            return UnauthorizedState;
+            _logger.LogDebug("Using IPrerenderAuthenticationStateProvider to retrieve user authentication state.");
+            return await prerenderAuth.GetPrerenderAuthenticationStateAsync();
         }
 
-        if (string.IsNullOrEmpty(jwtPair.AccessToken) || IsExpired(jwtPair.AccessTokenExpiresAt))
-        {
-            if (string.IsNullOrEmpty(jwtPair.RefreshToken) || IsExpired(jwtPair.RefreshTokenExpiresAt))
-            {
-                _logger.LogDebug("Access token was not found.");
-                return UnauthorizedState;
-            }
+        if (cookies is null) throw new Exception("No cookies array was found.");
 
-            var refreshResult = await userService.RefreshJwtPairAsync(jwtPair.RefreshToken);
+        var accessTokenCookie = cookies.FirstOrDefault(c => c.Key == Constants.AccessTokenCookieName);
+        var refreshTokenCookie = cookies.FirstOrDefault(c => c.Key == Constants.RefreshTokenCookieName);
+
+        if (accessTokenCookie is not null && !string.IsNullOrWhiteSpace(accessTokenCookie.Value))
+        {
+            _logger.LogDebug("Access token was found in cookies.");
+            var principal = ClaimsService.BuildClaimsPrincipal(accessTokenCookie.Value);
+            return new AuthenticationState(principal);
+        }
+
+        _logger.LogDebug("Access token was not found in cookies.");
+
+        if (refreshTokenCookie is not null && !string.IsNullOrWhiteSpace(refreshTokenCookie.Value))
+        {
+            _logger.LogDebug("Refresh token was found in cookies. Refreshing the user's JWT pair...");
+
+            var refreshResult = await userService.RefreshJwtPairAsync(refreshTokenCookie.Value);
 
             if (!refreshResult.IsSuccess)
             {
-                _logger.LogDebug("Refresh JWT pair returned {resultType}.{isSuccess}: false\nError Message: {errorMessage}",
-                    nameof(AuthenticationResult), nameof(AuthenticationResult.IsSuccess), refreshResult.ErrorMessage);
+                _logger.LogWarning("Failed to refresh the user's JWT pair.");
                 return UnauthorizedState;
             }
 
-            if (refreshResult.JwtPair is null)
-            {
-                _logger.LogDebug("Refresh JWT pair returned {resultType} with {jwtPair}: null.",
-                    nameof(AuthenticationResult), nameof(AuthenticationResult.JwtPair));
-                return UnauthorizedState;
-            }
-
-            jwtPair = refreshResult.JwtPair;
-
-            _logger.LogDebug("JWT pair was successfully refreshed:\n{jwtPair}", JsonSerializer.Serialize(jwtPair, _logSerializerOptions));
-        }
-        else
-        {
-            _logger.LogDebug("Access token was found: '{token}'.", jwtPair.AccessToken);
+            _logger.LogDebug("User's JWT pair was successfully refreshed.");
+            var principal = ClaimsService.BuildClaimsPrincipal(refreshResult.JwtPair!.AccessToken!);
+            return new AuthenticationState(principal);
         }
 
-        var principal = ClaimsService.BuildClaimsPrincipal(jwtPair.AccessToken!);
-
-        return new AuthenticationState(principal);
-    }
-
-    private static bool IsExpired(DateTimeOffset? timestamp)
-    {
-        return timestamp == null || DateTimeOffset.UtcNow >= timestamp;
+        _logger.LogDebug("Refresh token was not found in cookies.");
+        return UnauthorizedState;
     }
 }
