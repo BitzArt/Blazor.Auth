@@ -20,7 +20,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+		<PackageReference Include="BitzArt.Blazor.Cookies" Version="0.0.2-Prerelease" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.2" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.3.0" />
 	</ItemGroup>

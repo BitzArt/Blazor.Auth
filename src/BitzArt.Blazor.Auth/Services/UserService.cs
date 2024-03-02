@@ -1,16 +1,15 @@
-﻿using Blazored.LocalStorage;
-using System.Text.Json;
+﻿using BitzArt.Blazor.Cookies;
 
 namespace BitzArt.Blazor.Auth;
 
-internal class UserService(IAuthenticationService auth, ILocalStorageService localStorage) : IUserService
+internal class UserService(IAuthenticationService auth, ICookieService cookieService) : IUserService
 {
     public virtual async Task<AuthenticationResult> SignInAsync(object signInPayload)
     {
         var authResult = await auth.SignInAsync(signInPayload) ?? throw new Exception("Authentication result is null.");
 
         if (authResult.IsSuccess)
-            await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
+            await SaveJwtPair(authResult?.JwtPair);
 
         return authResult!;
     }
@@ -20,7 +19,7 @@ internal class UserService(IAuthenticationService auth, ILocalStorageService loc
         var authResult = await auth.SignUpAsync(signUpPayload) ?? throw new Exception("Authentication result is null.");
 
         if (authResult?.IsSuccess == true)
-            await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
+            await SaveJwtPair(authResult?.JwtPair);
 
         return authResult!;
     }
@@ -30,17 +29,20 @@ internal class UserService(IAuthenticationService auth, ILocalStorageService loc
         var authResult = await auth.RefreshJwtPairAsync(refreshToken) ?? throw new Exception("Authentication result is null.");
 
         if (authResult?.IsSuccess == true)
-            await SetToLocalStorage(Constants.JwtPairStoragePropertyName, authResult?.JwtPair);
+            await SaveJwtPair(authResult?.JwtPair);
 
         return authResult!;
     }
 
-    private async Task SetToLocalStorage(string key, JwtPair? jwtPair)
+    private async Task SaveJwtPair(JwtPair? jwtPair)
     {
         if (jwtPair is null) return;
 
-        var jwtPairJson = JsonSerializer.Serialize(jwtPair, BlazorAuthJsonSerializerOptions.Options);
-        await localStorage.SetItemAsStringAsync(key, jwtPairJson);
+        if (!string.IsNullOrWhiteSpace(jwtPair.AccessToken))
+            await cookieService.SetAsync(Constants.AccessTokenCookieName, jwtPair.AccessToken!, jwtPair.AccessTokenExpiresAt);
+
+        if (!string.IsNullOrWhiteSpace(jwtPair.RefreshToken))
+            await cookieService.SetAsync(Constants.RefreshTokenCookieName, jwtPair.RefreshToken!, jwtPair.RefreshTokenExpiresAt);
     }
 
     public virtual Type? GetSignInPayloadType()
@@ -56,8 +58,8 @@ internal class UserService(IAuthenticationService auth, ILocalStorageService loc
 
 internal class UserService<TSignInPayload, TSignUpPayload>(
     IAuthenticationService auth,
-    ILocalStorageService localStorage
-    ) : UserService(auth, localStorage)
+    ICookieService cookieService
+    ) : UserService(auth, cookieService)
 {
     public override Type? GetSignInPayloadType()
     {

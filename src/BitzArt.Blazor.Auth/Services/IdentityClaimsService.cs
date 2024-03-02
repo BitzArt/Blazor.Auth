@@ -17,7 +17,7 @@ public class IdentityClaimsService() : IIdentityClaimsService
         if (ValidateToken(token) == false) return EmptyClaimsPrincipal;
 
         var claims = MapClaims(token.Claims);
-        claims = claims.Append(new Claim(Constants.AccessTokenName, accessToken));
+        claims = claims.Append(new Claim(Constants.AccessTokenCookieName, accessToken));
 
         return new ClaimsPrincipal(new ClaimsIdentity(claims, "Custom"));
     }

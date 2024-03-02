@@ -1,4 +1,5 @@
-﻿using Blazored.LocalStorage;
+﻿using BitzArt.Blazor.Auth.Server.Services;
+using BitzArt.Blazor.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,10 +24,11 @@ public static class AddBlazorAuthExtension
     {
         services.AddAuthorizationCore();
         services.AddCascadingAuthenticationState();
-        services.AddBlazoredLocalStorage();
+        services.AddBlazorCookies();
 
         services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
         services.AddScoped<AuthenticationStateProvider, BlazorAuthenticationStateProvider>();
+        services.AddSingleton<IPrerenderAuthenticationStateProvider, ClientSidePrerenderAuthenticationStateProvider>();
 
         // UserService
         services.AddScoped<IUserService, UserService>();

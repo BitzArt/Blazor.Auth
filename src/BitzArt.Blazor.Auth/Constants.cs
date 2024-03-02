@@ -1,7 +1,7 @@
 ﻿namespace BitzArt.Blazor.Auth;
 
-public static class Constants
+internal static class Constants
 {
-    public const string AccessTokenName = "AccessToken";
-    public const string JwtPairStoragePropertyName = "Blazor.Auth.Jwt";
+    public const string AccessTokenCookieName = "AccessToken";
+    public const string RefreshTokenCookieName = "RefreshToken";
 }

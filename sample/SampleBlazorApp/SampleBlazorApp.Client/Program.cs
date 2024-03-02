@@ -11,6 +11,4 @@ builder.Services.AddScoped(sp =>
         BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
     });
 
-builder.Logging.AddFilter("Blazor.Auth", LogLevel.Debug);
-
 await builder.Build().RunAsync();
