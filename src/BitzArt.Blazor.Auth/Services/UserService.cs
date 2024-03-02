@@ -38,11 +38,11 @@ internal class UserService(IAuthenticationService auth, ICookieService cookieSer
     {
         if (jwtPair is null) return;
 
-        if (!string.IsNullOrWhiteSpace(jwtPair.AccessToken) && jwtPair.AccessTokenExpiresAt is not null)
-            await cookieService.SetAsync(Constants.AccessTokenCookieName, jwtPair.AccessToken!, jwtPair.AccessTokenExpiresAt!.Value);
+        if (!string.IsNullOrWhiteSpace(jwtPair.AccessToken))
+            await cookieService.SetAsync(Constants.AccessTokenCookieName, jwtPair.AccessToken!, jwtPair.AccessTokenExpiresAt);
 
-        if (!string.IsNullOrWhiteSpace(jwtPair.RefreshToken) && jwtPair.RefreshTokenExpiresAt is not null)
-            await cookieService.SetAsync(Constants.RefreshTokenCookieName, jwtPair.RefreshToken!, jwtPair.RefreshTokenExpiresAt!.Value);
+        if (!string.IsNullOrWhiteSpace(jwtPair.RefreshToken))
+            await cookieService.SetAsync(Constants.RefreshTokenCookieName, jwtPair.RefreshToken!, jwtPair.RefreshTokenExpiresAt);
     }
 
     public virtual Type? GetSignInPayloadType()
