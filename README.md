@@ -7,7 +7,18 @@
 
 ![Prerelease](https://img.shields.io/badge/prerelease%2C_work_in_progress-ffa624?style=for-the-badge)
 
-**Blazor.Auth** 
+**Blazor.Auth** is a tearless authentication library for Blazor United
+
+| Blazor Rendermode       | Support |
+|-------------------------|:-------:|
+| Static SSR              | ✔️     |
+| Interactive Server      | ✔️     |
+| Interactive WebAssembly | ✔️     |
+| Interactive Auto        | ✔️     |
+
+Refer to the [documentation](https://bitzart.github.io/Blazor.Auth) for more information.
+
+[![documentation](https://img.shields.io/badge/documentation-512BD4?style=for-the-badge)](https://bitzart.github.io/Blazor.Auth)
 
 ## License
 
