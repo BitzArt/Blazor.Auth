@@ -1,0 +1,25 @@
+﻿@page "/sign-out"
+@inherits PageBase
+
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+
+<PageTitle>Sign Out</PageTitle>
+
+<h1>Sign Out</h1>
+
+<div>
+    <div>
+        <button type="submit" class="btn btn-lg btn-primary" @onclick="SignOutAsync">Sign Out</button>
+    </div>
+</div>
+
+
+@code {
+    private async Task SignOutAsync()
+    {
+        await UserService.SignOutAsync();
+
+        NavigationManager.NavigateTo("/", true);
+    }
+}

@@ -7,6 +7,7 @@
 
     <main>
         <div class="top-row px-4">
+            Platform: @(OperatingSystem.IsBrowser() ? "Wasm" : "Server") |
             <AuthorizeView>
                 <NotAuthorized>
                     You are not authenticated

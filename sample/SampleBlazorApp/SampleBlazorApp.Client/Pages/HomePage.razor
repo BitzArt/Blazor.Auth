@@ -3,4 +3,16 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Home</h1>
+<h2>Count: @count</h2>
+
+<button type="submit" class="btn btn-lg btn-primary" @onclick="Click">Click</button>
+
+@code {
+
+    private int count = 0;
+
+    private void Click()
+    {
+        count++;
+    }
+}

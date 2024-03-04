@@ -1,41 +1,46 @@
 ﻿using BitzArt.Blazor.Auth.Server.Services;
 using BitzArt.Blazor.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BitzArt.Blazor.Auth;
 
 public static class AddBlazorAuthExtension
 {
-    public static IServiceCollection AddBlazorClientAuth(this IServiceCollection services)
+    public static WebAssemblyHostBuilder AddBlazorAuth(this WebAssemblyHostBuilder builder)
     {
-        return services.AddBlazorClientAuth<ClientSideAuthenticationService>();
+        return builder.AddBlazorAuth<ClientSideAuthenticationService>();
     }
 
-    public static IServiceCollection AddBlazorClientAuth<TAuthenticationService>(this IServiceCollection services)
+    public static WebAssemblyHostBuilder AddBlazorAuth<TAuthenticationService>(this WebAssemblyHostBuilder builder)
         where TAuthenticationService : class, IAuthenticationService
     {
-        return services.AddBlazorClientAuth<TAuthenticationService, IdentityClaimsService>();
+        return builder.AddBlazorAuth<TAuthenticationService, IdentityClaimsService>();
     }
 
-    public static IServiceCollection AddBlazorClientAuth<TAuthenticationService, TIdentityClaimsService>(this IServiceCollection services)
+    public static WebAssemblyHostBuilder AddBlazorAuth<TAuthenticationService, TIdentityClaimsService>(this WebAssemblyHostBuilder builder)
         where TAuthenticationService : class, IAuthenticationService
         where TIdentityClaimsService : class, IIdentityClaimsService
     {
-        services.AddAuthorizationCore();
-        services.AddCascadingAuthenticationState();
-        services.AddBlazorCookies();
+        builder.AddBlazorCookies();
 
-        services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
-        services.AddScoped<AuthenticationStateProvider, BlazorAuthenticationStateProvider>();
-        services.AddSingleton<IPrerenderAuthenticationStateProvider, ClientSidePrerenderAuthenticationStateProvider>();
+        builder.Services.AddAuthorizationCore();
+        builder.Services.AddCascadingAuthenticationState();
+
+        builder.Services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
+        builder.Services.AddScoped<AuthenticationStateProvider, BlazorAuthenticationStateProvider>();
+        builder.Services.AddSingleton<IPrerenderAuthenticationStateProvider, ClientSidePrerenderAuthenticationStateProvider>();
 
         // UserService
-        services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IUserService, UserService>();
 
         // AuthenticationService
-        services.AddScoped<IAuthenticationService, TAuthenticationService>();
+        builder.Services.AddHttpClient<IAuthenticationService, TAuthenticationService>(x =>
+        {
+            x.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress.TrimEnd('/') + "/api");
+        });
 
-        return services;
+        return builder;
     }
 }
