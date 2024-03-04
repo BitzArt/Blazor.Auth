@@ -7,11 +7,11 @@
 
 		<PackageId>BitzArt.Blazor.Auth</PackageId>
 		<Authors>BitzArt</Authors>
-		<Description>Authentication for Blazor United</Description>
+		<Description>A tearless authentication library for Blazor United</Description>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/BitzArt/Blazor.Auth</RepositoryUrl>
-		<PackageProjectUrl>https://github.com/BitzArt/Blazor.Auth</PackageProjectUrl>
+		<PackageProjectUrl>https://bitzart.github.io/Blazor.Auth/</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
