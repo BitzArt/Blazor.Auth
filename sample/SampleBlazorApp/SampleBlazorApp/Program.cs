@@ -16,15 +16,7 @@ internal class Program
             .AddInteractiveWebAssemblyComponents();
 
         builder.Services.AddScoped<JwtService>();
-        builder.Services.AddBlazorServerAuth<SampleServerSideAuthenticationService>();
-
-        builder.Services.AddHttpClient();
-
-        builder.Services.AddScoped(sp =>
-            new HttpClient
-            {
-                BaseAddress = new Uri("http://localhost:5034")
-            });
+        builder.AddBlazorAuth<SampleServerSideAuthenticationService>();
 
         var app = builder.Build();
 
@@ -48,7 +40,7 @@ internal class Program
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(SampleBlazorApp.Client._Imports).Assembly);
+            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
 
         app.MapAuthEndpoints();
 

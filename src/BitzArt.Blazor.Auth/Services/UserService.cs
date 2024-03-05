@@ -2,7 +2,10 @@
 
 namespace BitzArt.Blazor.Auth;
 
-internal class UserService(IAuthenticationService auth, ICookieService cookieService) : IUserService
+internal class UserService(
+    IAuthenticationService auth,
+    ICookieService cookieService
+    ) : IUserService
 {
     public virtual async Task<AuthenticationResult> SignInAsync(object signInPayload)
     {
@@ -32,6 +35,12 @@ internal class UserService(IAuthenticationService auth, ICookieService cookieSer
             await SaveJwtPair(authResult?.JwtPair);
 
         return authResult!;
+    }
+
+    public async Task SignOutAsync()
+    {
+        await cookieService.RemoveAsync(Constants.AccessTokenCookieName);
+        await cookieService.RemoveAsync(Constants.RefreshTokenCookieName);
     }
 
     private async Task SaveJwtPair(JwtPair? jwtPair)

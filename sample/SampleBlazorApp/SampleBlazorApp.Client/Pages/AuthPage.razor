@@ -1,0 +1,39 @@
+﻿@page "/auth"
+@inherits PageBase
+
+@inject NavigationManager NavigationManager
+@inject IUserService UserService
+
+<PageTitle>Sign In</PageTitle>
+
+<h1>Sign In</h1>
+
+<div>
+    <div>
+        <button type="submit" class="btn btn-lg btn-primary" @onclick="SignInAsync">Sign In</button>
+    </div>
+    <div>
+        <button type="submit" class="btn btn-lg btn-primary" @onclick="SignUpAsync">Sign Up</button>
+    </div>
+</div>
+
+
+@code {
+    private async Task SignInAsync()
+    {
+        var payload = new SignInPayload();
+
+        var result = await UserService.SignInAsync(payload);
+
+        NavigationManager.NavigateTo("/", true);
+    }
+
+    private async Task SignUpAsync()
+    {
+        var payload = new SignUpPayload();
+
+        var result = await UserService.SignUpAsync(payload);
+
+        NavigationManager.NavigateTo("/", true);
+    }
+}

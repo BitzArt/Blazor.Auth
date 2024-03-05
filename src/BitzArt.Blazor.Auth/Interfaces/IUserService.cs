@@ -25,4 +25,5 @@ public interface IUserService
     /// <returns>An <see cref="AuthenticationResult"/> received
     /// after refreshing the User's JWT Pair and updating the Authentication State.</returns>
     public Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken);
+    Task SignOutAsync();
 }

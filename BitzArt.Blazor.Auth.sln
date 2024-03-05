@@ -13,9 +13,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleBlazorApp", "sample\S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleBlazorApp.Client", "sample\SampleBlazorApp\SampleBlazorApp.Client\SampleBlazorApp.Client.csproj", "{5EC410B2-F3BA-41F6-816F-EE4860531482}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitzArt.Blazor.Auth.Client", "src\BitzArt.Blazor.Auth.Client\BitzArt.Blazor.Auth.Client.csproj", "{B8A8813E-FA02-416A-8694-F39388756C5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Auth.Client", "src\BitzArt.Blazor.Auth.Client\BitzArt.Blazor.Auth.Client.csproj", "{B8A8813E-FA02-416A-8694-F39388756C5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitzArt.Blazor.Auth.Server", "src\BitzArt.Blazor.Auth.Server\BitzArt.Blazor.Auth.Server.csproj", "{BA3BE36B-6418-4943-916E-24B993B3AABC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Auth.Server", "src\BitzArt.Blazor.Auth.Server\BitzArt.Blazor.Auth.Server.csproj", "{BA3BE36B-6418-4943-916E-24B993B3AABC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{BCC58C74-2E49-4CAD-84B3-75AD9E14A005}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{D0C5E24D-EB0A-412D-9BF3-6F531D079B82}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\docs.yml = .github\workflows\docs.yml
+		.github\workflows\Publish.Auth.yml = .github\workflows\Publish.Auth.yml
+		.github\workflows\Tests.yml = .github\workflows\Tests.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +62,7 @@ Global
 		{5EC410B2-F3BA-41F6-816F-EE4860531482} = {2E5D89F5-108F-4E1D-B9D7-D86A531130CE}
 		{B8A8813E-FA02-416A-8694-F39388756C5B} = {F0AC2847-ADDF-4D66-B1FA-2D6B34F206CF}
 		{BA3BE36B-6418-4943-916E-24B993B3AABC} = {F0AC2847-ADDF-4D66-B1FA-2D6B34F206CF}
+		{D0C5E24D-EB0A-412D-9BF3-6F531D079B82} = {BCC58C74-2E49-4CAD-84B3-75AD9E14A005}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43738754-874B-41F7-8B6C-087023E2CD94}

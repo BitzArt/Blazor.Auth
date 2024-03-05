@@ -14,28 +14,21 @@
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="public">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Public Page
-            </NavLink>
-        </div>
-
         <AuthorizeView>
             <NotAuthorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="sign-in">
+                    <NavLink class="nav-link" href="auth">
                         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Sign In
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="sign-up">
-                        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Sign Up
                     </NavLink>
                 </div>
             </NotAuthorized>
 
             <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="sign-out">
+                        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Sign Out
+                    </NavLink>
+                </div>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="auth-required">
                         <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Auth Required
