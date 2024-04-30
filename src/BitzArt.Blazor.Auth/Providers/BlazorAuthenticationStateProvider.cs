@@ -17,6 +17,16 @@ public class BlazorAuthenticationStateProvider(
     protected readonly IIdentityClaimsService ClaimsService = claimsService;
     private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
 
+    private AuthenticationState? _authenticationState;
+
+    private AuthenticationState Save(AuthenticationState state)
+    {
+        _authenticationState = state;
+        return state;
+    }
+
+    public AuthenticationState? AuthenticationState => _authenticationState;
+
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         _logger.LogDebug("GetAuthenticationStateAsync was called.");
@@ -30,7 +40,7 @@ public class BlazorAuthenticationStateProvider(
         catch (Exception)
         {
             _logger.LogDebug("Using IPrerenderAuthenticationStateProvider to retrieve user authentication state.");
-            return await prerenderAuth.GetPrerenderAuthenticationStateAsync();
+            return Save(await prerenderAuth.GetPrerenderAuthenticationStateAsync());
         }
 
         if (cookies is null) throw new Exception("No cookies array was found.");
@@ -42,7 +52,7 @@ public class BlazorAuthenticationStateProvider(
         {
             _logger.LogDebug("Access token was found in cookies.");
             var principal = ClaimsService.BuildClaimsPrincipal(accessTokenCookie.Value);
-            return new AuthenticationState(principal);
+            return Save(new AuthenticationState(principal));
         }
 
         _logger.LogDebug("Access token was not found in cookies.");
@@ -56,15 +66,15 @@ public class BlazorAuthenticationStateProvider(
             if (!refreshResult.IsSuccess)
             {
                 _logger.LogWarning("Failed to refresh the user's JWT pair.");
-                return UnauthorizedState;
+                return Save(UnauthorizedState);
             }
 
             _logger.LogDebug("User's JWT pair was successfully refreshed.");
             var principal = ClaimsService.BuildClaimsPrincipal(refreshResult.JwtPair!.AccessToken!);
-            return new AuthenticationState(principal);
+            return Save(new AuthenticationState(principal));
         }
 
         _logger.LogDebug("Refresh token was not found in cookies.");
-        return UnauthorizedState;
+        return Save(UnauthorizedState);
     }
 }

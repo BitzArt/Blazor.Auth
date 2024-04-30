@@ -30,6 +30,7 @@ public static class AddBlazorAuthExtension
 
         builder.Services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
         builder.Services.AddScoped<AuthenticationStateProvider, BlazorAuthenticationStateProvider>();
+        builder.Services.AddScoped(x => (x.GetRequiredService<AuthenticationStateProvider>() as BlazorAuthenticationStateProvider)!);
         builder.Services.AddSingleton<IPrerenderAuthenticationStateProvider, ClientSidePrerenderAuthenticationStateProvider>();
 
         // UserService
