@@ -1,5 +1,5 @@
 [book]
-title = "BitzArt.Blazor.Auth - a tearless Blazor United authentication library"
+title = "Blazor.Auth"
 
 [output.html]
 git-repository-url = "https://github.com/BitzArt/Blazor.Auth"
