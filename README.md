@@ -5,8 +5,6 @@
 
 ## Overview
 
-![Prerelease](https://img.shields.io/badge/prerelease%2C_work_in_progress-ffa624?style=for-the-badge)
-
 **BitzArt.Blazor.Auth** is a tearless authentication library for Blazor United.
 
 > 🍪
