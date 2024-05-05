@@ -10,7 +10,7 @@
 > 🍪
 > The package uses [Blazor.Cookies](https://github.com/BitzArt/Blazor.Cookies) for persisting user authentication state via browser cookies.
 
-This package allows implementing custom JWT-based authentication schemes in Blazor.
+This package simplifies implementing custom JWT-based authentication schemes with Blazor.
 
 - Built for dotnet 8+
 - Supports all Blazor United render modes
