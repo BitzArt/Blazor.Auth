@@ -9,7 +9,7 @@ public class ClientSideAuthenticationService(
 {
     public override async Task<AuthenticationResult> SignInAsync(object signInPayload)
     {
-        var response = await httpClient.PostAsJsonAsync("/api/sign-in", signInPayload);
+        var response = await httpClient.PostAsJsonAsync("/api/sign-in", signInPayload, BlazorAuthJsonSerializerOptions.Options);
 
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Server responded with status code '{response.StatusCode}'.");
@@ -24,7 +24,7 @@ public class ClientSideAuthenticationService(
 
     public override async Task<AuthenticationResult> SignUpAsync(object signUpPayload)
     {
-        var response = await httpClient.PostAsJsonAsync("/api/sign-up", signUpPayload);
+        var response = await httpClient.PostAsJsonAsync("/api/sign-up", signUpPayload, BlazorAuthJsonSerializerOptions.Options);
 
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Server responded with status code '{response.StatusCode}'.");
@@ -39,7 +39,7 @@ public class ClientSideAuthenticationService(
 
     public override async Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
     {
-        var response = await httpClient.PostAsJsonAsync("/api/refresh", refreshToken);
+        var response = await httpClient.PostAsJsonAsync("/api/refresh", refreshToken, BlazorAuthJsonSerializerOptions.Options);
 
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Server responded with status code '{response.StatusCode}'.");
