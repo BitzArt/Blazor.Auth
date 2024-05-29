@@ -6,4 +6,4 @@
 - [Getting Started](02.getting-started.md)
 - [Authentication](03.authentication.md)
 - [Use Cases](04.use-cases.md)
-- [Architecture][05.architecture.md]
+- [Architecture](05.architecture.md)
