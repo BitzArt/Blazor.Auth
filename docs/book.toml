@@ -1,12 +1,10 @@
 [book]
 title = "Blazor.Auth"
 
-[output.html]
-git-repository-url = "https://github.com/BitzArt/Blazor.Auth"
-git-repository-icon = "fa-github"
-
 [preprocessor.mermaid]
 command = "mdbook-mermaid"
 
 [output.html]
+git-repository-url = "https://github.com/BitzArt/Blazor.Auth"
+git-repository-icon = "fa-github"
 additional-js = ["mermaid.min.js", "mermaid-init.js"]
