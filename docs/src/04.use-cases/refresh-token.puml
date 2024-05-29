@@ -1,7 +1,7 @@
-@startuml refresh-token-flow
+@startuml refresh-token
 !pragma teoz true
 
-title Refresh Token Flow
+title Refresh Token
 
 actor "User" as user
 participant "Page" as page

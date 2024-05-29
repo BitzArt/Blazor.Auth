@@ -1,18 +1,18 @@
-@startuml sign-in-flow
+@startuml sign-up
 !pragma teoz true
 
-title Sign-In Flow
+title Sign-Up
 
 actor "User" as user
-participant "SignIn Page" as page
+participant "SignUp Page" as page
 participant "IUserService" as userService
 participant "IAuthenticationService" as authService
 
-user -> page: Submit Sign-In Form
+user -> page: Submit Sign-Up Form
 activate page
-page -> userService: SignInAsync(signInPayload)
+page -> userService: SignUpAsync(signUpPayload)
 activate userService
-userService -> authService: SignInAsync(signInPayload)
+userService -> authService: SignUpAsync(signUpPayload)
 activate authService
 authService -> authService: Your authentication logic
 authService --> userService: AuthenticationResult
