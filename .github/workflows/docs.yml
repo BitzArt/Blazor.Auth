@@ -35,7 +35,7 @@ jobs:
         run: |
           cd docs
           mdbook-mermaid install .
-          curl https://raw.githubusercontent.com/AnthonyTornetta/mdbook-mermaid/b7ec79d4f91b2dff5afcd5770588c6b6173b1a26/src/bin/assets/mermaid-init.js -o mermaid-init.js
+          curl -L -o mermaid-init.js https://raw.githubusercontent.com/AnthonyTornetta/mdbook-mermaid/b7ec79d4f91b2dff5afcd5770588c6b6173b1a26/src/bin/assets/mermaid-init.js
           mv -f mermaid-init.js src/bin/assets/mermaid-init.js
       - name: Build Book
         run: |
