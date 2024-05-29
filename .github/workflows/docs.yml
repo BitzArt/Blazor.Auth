@@ -31,13 +31,11 @@ jobs:
 #          mkdir mdbook
 #          curl -sSL $url | tar -xz --directory=./mdbook
 #          echo `pwd`/mdbook >> $GITHUB_PATH
-      - name: Use mermaid plugin
+      - name: Build Book
         run: |
           cd docs
           mdbook-mermaid install .
           mv -f mermaid-init-new.js mermaid-init.js
-      - name: Build Book
-        run: |
           mdbook build
       - name: Setup Pages
         uses: actions/configure-pages@v2
