@@ -9,4 +9,3 @@
     - [Static SSR](04.use-cases/01.static-ssr.md)
     - [Interactive WebAssembly](04.use-cases/02.interactive-webassembly.md)
     - [Interactive Server](04.use-cases/03.interactive-server.md)
-- [Architecture](05.architecture.md)
