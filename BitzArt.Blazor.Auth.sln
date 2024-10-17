@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Auth", "src\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{2E5D89F5-108F-4E1D-B9D7-D86A531130CE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleBlazorApp", "sample\SampleBlazorApp\SampleBlazorApp\SampleBlazorApp.csproj", "{914F51A6-4CA3-4038-BC22-89E697A9FD32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Auth.SampleApp", "sample\BitzArt.Blazor.Auth.SampleApp\BitzArt.Blazor.Auth.SampleApp\BitzArt.Blazor.Auth.SampleApp.csproj", "{914F51A6-4CA3-4038-BC22-89E697A9FD32}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleBlazorApp.Client", "sample\SampleBlazorApp\SampleBlazorApp.Client\SampleBlazorApp.Client.csproj", "{5EC410B2-F3BA-41F6-816F-EE4860531482}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Auth.SampleApp.Client", "sample\BitzArt.Blazor.Auth.SampleApp\BitzArt.Blazor.Auth.SampleApp.Client\BitzArt.Blazor.Auth.SampleApp.Client.csproj", "{5EC410B2-F3BA-41F6-816F-EE4860531482}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BitzArt.Blazor.Auth.Client", "src\BitzArt.Blazor.Auth.Client\BitzArt.Blazor.Auth.Client.csproj", "{B8A8813E-FA02-416A-8694-F39388756C5B}"
 EndProject
