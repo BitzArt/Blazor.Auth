@@ -1,18 +1,15 @@
 ﻿@page "/auth"
-@inherits PageBase
 
 @inject NavigationManager NavigationManager
 @inject IUserService UserService
 
-<PageTitle>Sign In</PageTitle>
-
-<h1>Sign In</h1>
+<PageTitle>Auth Page | Blazor.Auth</PageTitle>
 
 <div>
-    <div>
+    <div style="margin-top:2rem;">
         <button type="submit" class="btn btn-lg btn-primary" @onclick="SignInAsync">Sign In</button>
     </div>
-    <div>
+    <div style="margin-top:2rem;">
         <button type="submit" class="btn btn-lg btn-primary" @onclick="SignUpAsync">Sign Up</button>
     </div>
 </div>
