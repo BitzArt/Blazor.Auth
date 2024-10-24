@@ -20,8 +20,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BitzArt.Blazor.Cookies.Client" Version="1.0.2" />
-		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+		<PackageReference Include="BitzArt.Blazor.Cookies.Client" Version="1.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

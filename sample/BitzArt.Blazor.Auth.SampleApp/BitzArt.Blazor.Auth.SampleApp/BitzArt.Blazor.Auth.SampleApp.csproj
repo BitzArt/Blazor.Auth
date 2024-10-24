@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -10,7 +10,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\src\BitzArt.Blazor.Auth.Server\BitzArt.Blazor.Auth.Server.csproj" />
 		<ProjectReference Include="..\BitzArt.Blazor.Auth.SampleApp.Client\BitzArt.Blazor.Auth.SampleApp.Client.csproj" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.10" />
 	</ItemGroup>
 
 </Project>
