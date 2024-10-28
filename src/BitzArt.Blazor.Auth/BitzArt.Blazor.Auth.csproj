@@ -20,7 +20,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="BitzArt.Blazor.Cookies" Version="1.1.0" />
+		<PackageReference Include="BitzArt.Blazor.Cookies" Version="1.1.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.10" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
 	</ItemGroup>
