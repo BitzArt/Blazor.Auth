@@ -51,7 +51,7 @@ public class BlazorAuthenticationStateProvider(
         if (accessTokenCookie is not null && !string.IsNullOrWhiteSpace(accessTokenCookie.Value))
         {
             _logger.LogDebug("Access token was found in cookies.");
-            var principal = ClaimsService.BuildClaimsPrincipal(accessTokenCookie.Value);
+            var principal = await ClaimsService.BuildClaimsPrincipalAsync(accessTokenCookie.Value);
             return Save(new AuthenticationState(principal));
         }
 
@@ -70,7 +70,7 @@ public class BlazorAuthenticationStateProvider(
             }
 
             _logger.LogDebug("User's JWT pair was successfully refreshed.");
-            var principal = ClaimsService.BuildClaimsPrincipal(refreshResult.JwtPair!.AccessToken!);
+            var principal = await ClaimsService.BuildClaimsPrincipalAsync(refreshResult.JwtPair!.AccessToken!);
             return Save(new AuthenticationState(principal));
         }
 
