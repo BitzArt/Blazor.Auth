@@ -22,6 +22,11 @@ public class IdentityClaimsService() : IIdentityClaimsService
         return new ClaimsPrincipal(new ClaimsIdentity(claims, "Custom"));
     }
 
+    public virtual Task<ClaimsPrincipal> BuildClaimsPrincipalAsync(string accessToken)
+    {
+        return Task.FromResult(BuildClaimsPrincipal(accessToken));
+    }
+
     protected virtual bool ValidateRawToken(string token) => true;
 
     protected virtual bool ValidateToken(JwtSecurityToken token) => true;

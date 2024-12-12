@@ -26,7 +26,7 @@ internal class ServerSidePrerenderAuthenticationStateProvider(
         if (!string.IsNullOrWhiteSpace(accessToken))
         {
             logger.LogDebug("Access token was found in request cookies.");
-            var principal = claimsService.BuildClaimsPrincipal(accessToken);
+            var principal = await claimsService.BuildClaimsPrincipalAsync(accessToken);
             return new AuthenticationState(principal);
         }
 
@@ -47,7 +47,7 @@ internal class ServerSidePrerenderAuthenticationStateProvider(
             }
 
             logger.LogDebug("User's JWT pair was successfully refreshed.");
-            var principal = claimsService.BuildClaimsPrincipal(refreshResult.JwtPair!.AccessToken!);
+            var principal = await claimsService.BuildClaimsPrincipalAsync(refreshResult.JwtPair!.AccessToken!);
             
             httpContext.Response.Cookies.Append(Constants.AccessTokenCookieName, refreshResult.JwtPair!.AccessToken!, new CookieOptions
             {
