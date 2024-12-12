@@ -8,6 +8,11 @@ public class IdentityClaimsService() : IIdentityClaimsService
     private readonly JwtSecurityTokenHandler _tokenHandler = new();
     private static ClaimsPrincipal EmptyClaimsPrincipal => new(new ClaimsIdentity());
 
+    public virtual Task<ClaimsPrincipal> BuildClaimsPrincipalAsync(string accessToken)
+    {
+        return Task.FromResult(BuildClaimsPrincipal(accessToken));
+    }
+
     public virtual ClaimsPrincipal BuildClaimsPrincipal(string accessToken)
     {
         if (ValidateRawToken(accessToken) == false) return EmptyClaimsPrincipal;
@@ -20,11 +25,6 @@ public class IdentityClaimsService() : IIdentityClaimsService
         claims = claims.Append(new Claim(Constants.AccessTokenCookieName, accessToken));
 
         return new ClaimsPrincipal(new ClaimsIdentity(claims, "Custom"));
-    }
-
-    public virtual Task<ClaimsPrincipal> BuildClaimsPrincipalAsync(string accessToken)
-    {
-        return Task.FromResult(BuildClaimsPrincipal(accessToken));
     }
 
     protected virtual bool ValidateRawToken(string token) => true;
