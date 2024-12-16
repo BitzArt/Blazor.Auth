@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
@@ -24,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BitzArt.Blazor.Cookies.Server" Version="1.1.2" />
+		<PackageReference Include="BitzArt.Blazor.Cookies.Server" Version="1.1.4" />
 	</ItemGroup>
 
 	<ItemGroup>
