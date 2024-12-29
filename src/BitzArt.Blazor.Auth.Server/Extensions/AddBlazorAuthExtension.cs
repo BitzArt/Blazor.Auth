@@ -13,17 +13,18 @@ public static class AddBlazorAuthExtension
 {
     public static IHostApplicationBuilder AddBlazorAuth(this IHostApplicationBuilder builder)
     {
-        return builder.AddBlazorAuth<IdentityClaimsService, ServerSideAuthenticationService<object, object>>();
+        return builder.AddBlazorAuth<ServerSideAuthenticationService<object, object>, IdentityClaimsService>();
     }
+
     public static IHostApplicationBuilder AddBlazorAuth<TServerSideAuthenticationService>(this IHostApplicationBuilder builder)
         where TServerSideAuthenticationService : class, IServerSideAuthenticationService
     {
-        return builder.AddBlazorAuth<IdentityClaimsService, TServerSideAuthenticationService>();
+        return builder.AddBlazorAuth<TServerSideAuthenticationService, IdentityClaimsService>();
     }
 
-    public static IHostApplicationBuilder AddBlazorAuth<TIdentityClaimsService, TServerSideAuthenticationService>(this IHostApplicationBuilder builder)
-        where TIdentityClaimsService : class, IIdentityClaimsService
+    public static IHostApplicationBuilder AddBlazorAuth<TServerSideAuthenticationService, TIdentityClaimsService>(this IHostApplicationBuilder builder)
         where TServerSideAuthenticationService : class, IServerSideAuthenticationService
+        where TIdentityClaimsService : class, IIdentityClaimsService
     {
         builder.AddBlazorCookies();
 
