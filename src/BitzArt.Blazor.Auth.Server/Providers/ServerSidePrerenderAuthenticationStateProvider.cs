@@ -12,7 +12,7 @@ internal class ServerSidePrerenderAuthenticationStateProvider(
     ILoggerFactory loggerFactory
     ) : IPrerenderAuthenticationStateProvider
 {
-    private ILogger logger = loggerFactory.CreateLogger("Blazor.Auth.Prerender");
+    private readonly ILogger logger = loggerFactory.CreateLogger("Blazor.Auth");
     private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
 
     public async Task<AuthenticationState> GetPrerenderAuthenticationStateAsync()

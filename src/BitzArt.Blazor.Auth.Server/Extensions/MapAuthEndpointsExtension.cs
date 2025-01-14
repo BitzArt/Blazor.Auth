@@ -10,7 +10,16 @@ public static class MapAuthEndpointsExtension
 {
     public static IEndpointRouteBuilder MapAuthEndpoints(this IEndpointRouteBuilder builder)
     {
-        builder.MapPost("/api/sign-in", async (
+        builder.MapGet("/_auth/me", async (
+            IServerSideAuthenticationService authService,
+            [FromServices] IHttpContextAccessor httpContextAccessor) =>
+        {
+            var context = httpContextAccessor.HttpContext;
+            var result = await authService.GetMeAsync(context!);
+            return Results.Ok(result);
+        });
+
+        builder.MapPost("/_auth/sign-in", async (
             IServerSideAuthenticationService authService,
             [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {
@@ -26,7 +35,7 @@ public static class MapAuthEndpointsExtension
             return Results.Ok(result);
         });
 
-        builder.MapPost("/api/sign-up", async (
+        builder.MapPost("/_auth/sign-up", async (
             IServerSideAuthenticationService authService,
             [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {
@@ -42,7 +51,7 @@ public static class MapAuthEndpointsExtension
             return Results.Ok(result);
         });
 
-        builder.MapPost("/api/refresh", async (
+        builder.MapPost("/_auth/refresh", async (
             IServerSideAuthenticationService authService,
             [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {

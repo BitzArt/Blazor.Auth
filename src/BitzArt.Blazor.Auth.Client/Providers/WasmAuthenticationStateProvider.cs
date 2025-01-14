@@ -5,15 +5,14 @@ using System.Security.Claims;
 
 namespace BitzArt.Blazor.Auth;
 
-public class BlazorAuthenticationStateProvider(
+public class WasmAuthenticationStateProvider(
     ILoggerFactory loggerFactory,
     ICookieService cookieService,
-    IPrerenderAuthenticationStateProvider prerenderAuth,
     IIdentityClaimsService claimsService,
     IUserService userService)
     : AuthenticationStateProvider
 {
-    private readonly ILogger _logger = loggerFactory.CreateLogger("Blazor.Auth.AuthenticationState");
+    private readonly ILogger _logger = loggerFactory.CreateLogger("Blazor.Auth");
     protected readonly IIdentityClaimsService ClaimsService = claimsService;
     private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
 
@@ -22,7 +21,6 @@ public class BlazorAuthenticationStateProvider(
     private AuthenticationState Save(AuthenticationState state)
     {
         _authenticationState = state;
-        NotifyAuthenticationStateChanged(Task.FromResult(state));
         return state;
     }
 
@@ -34,15 +32,7 @@ public class BlazorAuthenticationStateProvider(
 
         IEnumerable<Cookie>? cookies = null;
 
-        try
-        {
-            cookies = await cookieService.GetAllAsync();
-        }
-        catch (Exception)
-        {
-            _logger.LogDebug("Using IPrerenderAuthenticationStateProvider to retrieve user authentication state.");
-            return Save(await prerenderAuth.GetPrerenderAuthenticationStateAsync());
-        }
+        cookies = await cookieService.GetAllAsync();
 
         if (cookies is null) throw new Exception("No cookies array was found.");
 
