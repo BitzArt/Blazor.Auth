@@ -5,16 +5,10 @@ namespace BitzArt.Blazor.Auth;
 
 internal static class Constants
 {
-    public const string AccessTokenCookieName = "AccessToken";
-    public const string RefreshTokenCookieName = "RefreshToken";
-
-    public static class SerializerOptions
+    public static readonly JsonSerializerOptions JsonSerializerOptions = new()
     {
-        public static readonly JsonSerializerOptions Options = new()
-        {
-            PropertyNameCaseInsensitive = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        };
-    }
+        PropertyNameCaseInsensitive = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
 }

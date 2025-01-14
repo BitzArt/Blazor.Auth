@@ -3,14 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
-namespace BitzArt.Blazor.Auth.Server.Services;
+namespace BitzArt.Blazor.Auth.Server;
 
 internal class ServerSidePrerenderAuthenticationStateProvider(
     IHttpContextAccessor httpContextAccessor,
     IIdentityClaimsService claimsService,
     IAuthenticationService authenticationService,
-    ILoggerFactory loggerFactory
-    ) : IPrerenderAuthenticationStateProvider
+    ILoggerFactory loggerFactory)
 {
     private readonly ILogger logger = loggerFactory.CreateLogger("Blazor.Auth");
     private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
@@ -21,7 +20,7 @@ internal class ServerSidePrerenderAuthenticationStateProvider(
     
         var cookies = httpContext.Request.Cookies;
 
-        var accessToken = cookies[Constants.AccessTokenCookieName];
+        var accessToken = cookies[Cookies.AccessToken];
 
         if (!string.IsNullOrWhiteSpace(accessToken))
         {
@@ -32,7 +31,7 @@ internal class ServerSidePrerenderAuthenticationStateProvider(
 
         logger.LogDebug("Access token was not found in request cookies.");
 
-        var refreshToken = cookies[Constants.RefreshTokenCookieName];
+        var refreshToken = cookies[Cookies.RefreshToken];
 
         if (!string.IsNullOrWhiteSpace(refreshToken))
         {
@@ -49,13 +48,13 @@ internal class ServerSidePrerenderAuthenticationStateProvider(
             logger.LogDebug("User's JWT pair was successfully refreshed.");
             var principal = await claimsService.BuildClaimsPrincipalAsync(refreshResult.JwtPair!.AccessToken!);
             
-            httpContext.Response.Cookies.Append(Constants.AccessTokenCookieName, refreshResult.JwtPair!.AccessToken!, new CookieOptions
+            httpContext.Response.Cookies.Append(Cookies.AccessToken, refreshResult.JwtPair!.AccessToken!, new CookieOptions
             {
                 SameSite = SameSiteMode.Strict,
                 Expires = refreshResult.JwtPair.AccessTokenExpiresAt
             });
 
-            httpContext.Response.Cookies.Append(Constants.RefreshTokenCookieName, refreshResult.JwtPair!.RefreshToken!, new CookieOptions
+            httpContext.Response.Cookies.Append(Cookies.RefreshToken, refreshResult.JwtPair!.RefreshToken!, new CookieOptions
             {
                 SameSite = SameSiteMode.Strict,
                 Expires = refreshResult.JwtPair.RefreshTokenExpiresAt

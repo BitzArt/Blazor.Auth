@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.AspNetCore.Http;
 
-namespace BitzArt.Blazor.Auth;
+namespace BitzArt.Blazor.Auth.Server;
 
-public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewareResultHandler
+internal class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewareResultHandler
 {
     public Task HandleAsync(
         RequestDelegate next,

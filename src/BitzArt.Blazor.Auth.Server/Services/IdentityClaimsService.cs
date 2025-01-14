@@ -1,7 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace BitzArt.Blazor.Auth;
+namespace BitzArt.Blazor.Auth.Server;
 
 public class IdentityClaimsService() : IIdentityClaimsService
 {
@@ -17,7 +17,7 @@ public class IdentityClaimsService() : IIdentityClaimsService
         var token = _tokenHandler.ReadJwtToken(accessToken);
 
         var claims = MapClaims(token.Claims);
-        claims = claims.Append(new Claim(Constants.AccessTokenCookieName, accessToken));
+        claims = claims.Append(new Claim(Cookies.AccessToken, accessToken));
 
         return new ClaimsPrincipal(new ClaimsIdentity(claims, "Custom"));
     }

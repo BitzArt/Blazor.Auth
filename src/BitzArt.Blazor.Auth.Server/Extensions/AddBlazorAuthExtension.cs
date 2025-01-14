@@ -1,13 +1,10 @@
-﻿using BitzArt.Blazor.Auth.Server.Services;
-using BitzArt.Blazor.Cookies;
+﻿using BitzArt.Blazor.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
-namespace BitzArt.Blazor.Auth;
+namespace BitzArt.Blazor.Auth.Server;
 
 public static class AddBlazorAuthExtension
 {
@@ -31,23 +28,17 @@ public static class AddBlazorAuthExtension
         builder.Services.AddCascadingAuthenticationState();
 
         builder.Services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
-        builder.Services.AddScoped<AuthenticationStateProvider, BlazorAuthenticationStateProvider>();
-        builder.Services.AddScoped<IPrerenderAuthenticationStateProvider, ServerSidePrerenderAuthenticationStateProvider>();
+        builder.Services.AddScoped<AuthenticationStateProvider, ServerSideAuthenticationStateProvider>();
+        builder.Services.AddScoped<ServerSidePrerenderAuthenticationStateProvider>();
+
+        // Fix for issue: https://github.com/dotnet/aspnetcore/issues/52317
         builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 
-        builder.Services.ConfigureHttpJsonOptions(opts =>
-        {
-            opts.SerializerOptions.PropertyNameCaseInsensitive = true;
-            opts.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            opts.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-        });
-
         // UserService
-        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IUserService, ServerSideUserService>();
 
         // AuthenticationService
-        builder.Services.AddScoped<IAuthenticationService, TServerSideAuthenticationService>();
-        builder.Services.AddScoped(sp => (IServerSideAuthenticationService)sp.GetRequiredService<IAuthenticationService>());
+        builder.Services.AddScoped<IServerSideAuthenticationService, TServerSideAuthenticationService>();
 
         return builder;
     }

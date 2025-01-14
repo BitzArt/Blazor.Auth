@@ -1,9 +1,9 @@
-﻿namespace BitzArt.Blazor.Auth;
+﻿namespace BitzArt.Blazor.Auth.Server;
 
 public class ServerSideAuthenticationService<TSignInPayload, TSignUpPayload>()
-    : AuthenticationService(), IServerSideAuthenticationService
+    : IServerSideAuthenticationService
 {
-    public override async Task<AuthenticationResult> SignInAsync(object signInPayload)
+    public async Task<AuthenticationResult> SignInAsync(object signInPayload)
     {
         if (signInPayload is not TSignInPayload signInPayloadCasted)
             throw new Exception($"Sign-in payload is not {typeof(TSignInPayload).Name} type.");
@@ -21,7 +21,7 @@ public class ServerSideAuthenticationService<TSignInPayload, TSignUpPayload>()
         throw new NotImplementedException();
     }
 
-    public override async Task<AuthenticationResult> SignUpAsync(object signUpPayload)
+    public async Task<AuthenticationResult> SignUpAsync(object signUpPayload)
     {
         if (signUpPayload is not TSignUpPayload signUpPayloadCasted)
             throw new Exception($"Sign-up payload is not {typeof(TSignUpPayload).Name} type.");
@@ -37,6 +37,11 @@ public class ServerSideAuthenticationService<TSignInPayload, TSignUpPayload>()
     protected virtual Task<AuthenticationResult> GetSignUpResultAsync(TSignUpPayload signIpPayload)
     {
         throw new NotImplementedException();
+    }
+
+    public virtual Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
+    {
+        return Task.FromResult(AuthenticationResult.Failure($"{nameof(IAuthenticationService)}.{nameof(RefreshJwtPairAsync)} is not implemented."));
     }
 
     public Type? GetSignInPayloadType() => typeof(TSignInPayload);

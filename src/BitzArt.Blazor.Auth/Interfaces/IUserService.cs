@@ -1,7 +1,7 @@
 ﻿namespace BitzArt.Blazor.Auth;
 
 /// <summary>
-/// A service responsible for the current User's authentication state.
+/// A service responsible for authentication functionality.
 /// </summary>
 public interface IUserService
 {
@@ -25,5 +25,10 @@ public interface IUserService
     /// <returns>An <see cref="AuthenticationResult"/> received
     /// after refreshing the User's JWT Pair and updating the Authentication State.</returns>
     public Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken);
-    Task SignOutAsync();
+
+    /// <summary>
+    /// Sign the current User out.
+    /// </summary>
+    /// <returns> A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public Task SignOutAsync();
 }

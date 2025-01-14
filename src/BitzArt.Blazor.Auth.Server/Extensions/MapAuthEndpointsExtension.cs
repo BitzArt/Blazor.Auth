@@ -1,21 +1,32 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System.Text.Json;
 
-namespace BitzArt.Blazor.Auth;
+namespace BitzArt.Blazor.Auth.Server;
 
+/// <summary>
+/// Extension methods for mapping server-side authentication endpoints.
+/// </summary>
 public static class MapAuthEndpointsExtension
 {
+    /// <summary>
+    /// Maps the server-side endpoints necessary for client-side authentication to work.
+    /// </summary>
+    /// <param name="builder"> The <see cref="IEndpointRouteBuilder"/>. </param>
+    /// <returns> The <see cref="IEndpointRouteBuilder"/> to allow chaining. </returns>
+    /// <exception cref="NotImplementedException"></exception>
     public static IEndpointRouteBuilder MapAuthEndpoints(this IEndpointRouteBuilder builder)
     {
         builder.MapGet("/_auth/me", async (
-            IServerSideAuthenticationService authService,
+            AuthenticationStateProvider authStateProvider,
             [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {
-            var context = httpContextAccessor.HttpContext;
-            var result = await authService.GetMeAsync(context!);
+            var state = await authStateProvider.GetAuthenticationStateAsync();
+            var result = state.ToDto();
+
             return Results.Ok(result);
         });
 
@@ -28,7 +39,7 @@ public static class MapAuthEndpointsExtension
             var context = httpContextAccessor.HttpContext;
             using StreamReader reader = new(context!.Request.Body);
             var bodyAsString = await reader.ReadToEndAsync();
-            var payload = JsonSerializer.Deserialize(bodyAsString, type, BlazorAuthJsonSerializerOptions.Options);
+            var payload = JsonSerializer.Deserialize(bodyAsString, type, Constants.JsonSerializerOptions);
 
             var result = await authService.SignInAsync(payload!);
 
@@ -44,7 +55,7 @@ public static class MapAuthEndpointsExtension
             var context = httpContextAccessor.HttpContext;
             using StreamReader reader = new(context!.Request.Body);
             var bodyAsString = await reader.ReadToEndAsync();
-            var payload = JsonSerializer.Deserialize(bodyAsString, type, BlazorAuthJsonSerializerOptions.Options);
+            var payload = JsonSerializer.Deserialize(bodyAsString, type, Constants.JsonSerializerOptions);
 
             var result = await authService.SignUpAsync(payload!);
 
@@ -58,7 +69,7 @@ public static class MapAuthEndpointsExtension
             var context = httpContextAccessor.HttpContext;
             using StreamReader reader = new(context!.Request.Body);
             var bodyAsString = await reader.ReadToEndAsync();
-            var refreshToken = JsonSerializer.Deserialize<string>(bodyAsString, BlazorAuthJsonSerializerOptions.Options);
+            var refreshToken = JsonSerializer.Deserialize<string>(bodyAsString, Constants.JsonSerializerOptions);
 
             var result = await authService.RefreshJwtPairAsync(refreshToken!);
 
