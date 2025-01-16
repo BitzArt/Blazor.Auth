@@ -41,7 +41,7 @@ public class ServerSideAuthenticationService<TSignInPayload, TSignUpPayload>()
 
     public virtual Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
     {
-        return Task.FromResult(AuthenticationResult.Failure($"{nameof(IAuthenticationService)}.{nameof(RefreshJwtPairAsync)} is not implemented."));
+        return Task.FromResult(AuthenticationResult.Failure($"{nameof(IServerSideAuthenticationService)}.{nameof(RefreshJwtPairAsync)} is not implemented."));
     }
 
     public Type? GetSignInPayloadType() => typeof(TSignInPayload);

@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace BitzArt.Blazor.Auth.Client;
 
-internal class BlazorHostClient(HttpClient httpClient, ClientSideLogger logger)
+internal class BlazorHostHttpClient(HttpClient httpClient, ClientSideLogger logger)
 {
     private readonly HttpClient _httpClient = httpClient;
     private readonly ILogger _logger = logger;
@@ -22,7 +22,9 @@ internal class BlazorHostClient(HttpClient httpClient, ClientSideLogger logger)
     public async Task<TResponse> PostAsync<TResponse>(string requestUri, object value)
     {
         var response = await _httpClient.PostAsJsonAsync(requestUri, value, Constants.JsonSerializerOptions);
-        return await ParseResponseAsync<TResponse>(response);
+        var result = await ParseResponseAsync<TResponse>(response);
+
+        return result;
     }
 
     public async Task<HttpResponseMessage> GetAsync(string requestUri) => await _httpClient.PostAsync(requestUri, null);
@@ -55,8 +57,10 @@ internal class BlazorHostClient(HttpClient httpClient, ClientSideLogger logger)
     {
         try
         {
-            return JsonSerializer.Deserialize<TResult>(content, Constants.JsonSerializerOptions)
+            var result = JsonSerializer.Deserialize<TResult>(content, Constants.JsonSerializerOptions)
                 ?? throw new Exception("resulting object is null.");
+
+            return result;
         }
         catch (Exception ex)
         {

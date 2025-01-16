@@ -2,8 +2,8 @@
 
 namespace BitzArt.Blazor.Auth.Client;
 
-internal class BlazorHostClientMessageHandler(HttpMessageHandler innerHandler, ClientSideLogger logger)
-    : DelegatingHandler(innerHandler)
+internal class BlazorHostHttpClientMessageHandler(ClientSideLogger logger)
+    : DelegatingHandler
 {
     private const string _errorMessage = "An error occurred while sending authentication request to the host. See inner exception for details.";
 

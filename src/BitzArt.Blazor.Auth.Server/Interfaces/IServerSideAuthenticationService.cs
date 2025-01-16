@@ -27,12 +27,6 @@ public interface IServerSideAuthenticationService
     public Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken);
 
     /// <summary>
-    /// Sign the current User out.
-    /// </summary>
-    /// <returns> A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public Task SignOutAsync();
-
-    /// <summary>
     /// Get the type of the sign-in payload.
     /// </summary>
     /// <returns> The type of the sign-in payload.</returns>

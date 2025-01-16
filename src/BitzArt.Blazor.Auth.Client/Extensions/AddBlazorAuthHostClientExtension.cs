@@ -7,11 +7,13 @@ internal static class AddBlazorAuthHostClientExtension
 {
     internal static WebAssemblyHostBuilder AddBlazorAuthHostClient(this WebAssemblyHostBuilder builder)
     {
-        builder.Services.AddHttpClient<BlazorHostClient>(httpClient =>
-        {
-            httpClient.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress.TrimEnd('/') + "/_auth");
+        builder.Services.AddScoped<BlazorHostHttpClientMessageHandler>();
 
-        }).AddHttpMessageHandler<BlazorHostClientMessageHandler>();
+        builder.Services.AddHttpClient<BlazorHostHttpClient>(httpClient =>
+        {
+            httpClient.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+
+        }).AddHttpMessageHandler<BlazorHostHttpClientMessageHandler>();
 
         return builder;
     }

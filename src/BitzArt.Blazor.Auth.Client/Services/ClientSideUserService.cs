@@ -1,6 +1,6 @@
 ﻿namespace BitzArt.Blazor.Auth.Client;
 
-internal class ClientSideUserService(BlazorHostClient hostClient) : IUserService
+internal class ClientSideUserService(BlazorHostHttpClient hostClient) : IUserService
 {
     public async Task<AuthenticationResult> SignInAsync(object signInPayload)
         => await hostClient.PostAsync<AuthenticationResult>("/_auth/sign-in", signInPayload);

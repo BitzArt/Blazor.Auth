@@ -25,7 +25,9 @@ public static class MapAuthEndpointsExtension
             [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {
             var state = await authStateProvider.GetAuthenticationStateAsync();
-            var result = state.ToDto();
+            var principal = state.User;
+            var principalDto = principal.ToDto();
+            var result = JsonSerializer.Serialize(principalDto, Constants.JsonSerializerOptions);
 
             return Results.Ok(result);
         });
@@ -74,6 +76,13 @@ public static class MapAuthEndpointsExtension
             var result = await authService.RefreshJwtPairAsync(refreshToken!);
 
             return result;
+        });
+
+        builder.MapPost("/_auth/sign-out", async (
+            IUserService userService) =>
+        {
+            await userService.SignOutAsync();
+            return Results.Ok();
         });
 
         return builder;

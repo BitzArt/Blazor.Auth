@@ -1,4 +1,5 @@
 using BitzArt.Blazor.Auth.SampleApp.Services;
+using BitzArt.Blazor.Auth.Server;
 
 namespace BitzArt.Blazor.Auth.SampleApp;
 
