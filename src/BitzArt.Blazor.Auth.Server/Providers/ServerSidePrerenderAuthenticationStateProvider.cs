@@ -8,7 +8,7 @@ namespace BitzArt.Blazor.Auth.Server;
 internal class ServerSidePrerenderAuthenticationStateProvider(
     IHttpContextAccessor httpContextAccessor,
     IIdentityClaimsService claimsService,
-    IServerSideAuthenticationService authenticationService,
+    IAuthenticationService authenticationService,
     ILoggerFactory loggerFactory)
 {
     private readonly ILogger logger = loggerFactory.CreateLogger("Blazor.Auth");

@@ -10,6 +10,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\src\BitzArt.Blazor.Auth.Server\BitzArt.Blazor.Auth.Server.csproj" />
 		<ProjectReference Include="..\BitzArt.Blazor.Auth.SampleApp.Client\BitzArt.Blazor.Auth.SampleApp.Client.csproj" />
+		<ProjectReference Include="..\BitzArt.Blazor.Auth.SampleApp.Shared\BitzArt.Blazor.Auth.SampleApp.Shared.csproj" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
 	</ItemGroup>
 

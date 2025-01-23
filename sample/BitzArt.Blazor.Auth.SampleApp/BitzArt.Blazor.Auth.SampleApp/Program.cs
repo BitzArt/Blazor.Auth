@@ -29,7 +29,7 @@ internal class Program
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+            .AddAdditionalAssemblies(typeof(Shared._Imports).Assembly);
 
         app.MapAuthEndpoints();
 

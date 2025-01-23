@@ -3,7 +3,7 @@
 namespace BitzArt.Blazor.Auth.SampleApp.Services;
 
 public class SampleServerSideAuthenticationService(JwtService jwtService)
-    : ServerSideAuthenticationService<SignInPayload, object>()
+    : AuthenticationService<SignInPayload, object>()
 {
     protected override Task<AuthenticationResult> GetSignInResultAsync(SignInPayload signInPayload)
     {

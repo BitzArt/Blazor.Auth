@@ -3,7 +3,7 @@
 namespace BitzArt.Blazor.Auth.Server;
 
 internal class ServerSideUserService(
-    IServerSideAuthenticationService auth,
+    IAuthenticationService auth,
     ICookieService cookieService
     ) : IUserService
 {
