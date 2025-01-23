@@ -50,13 +50,11 @@ public static class ServerSideAddBlazorAuthExtensions
         builder.Services.AddScoped<AuthenticationStateProvider, ServerSideAuthenticationStateProvider>();
         builder.Services.AddScoped<ServerSidePrerenderAuthenticationStateProvider>();
 
-        builder.AddAuthenticationService<TAuthenticationService>();
+        var authServiceSignature = builder.Services.AddAuthenticationService<TAuthenticationService>();
+        builder.Services.AddUserService(authServiceSignature);
 
         // Fix for issue: https://github.com/dotnet/aspnetcore/issues/52317
         builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
-
-        // UserService
-        builder.Services.AddScoped<IUserService, ServerSideUserService>();
 
         return builder;
     }

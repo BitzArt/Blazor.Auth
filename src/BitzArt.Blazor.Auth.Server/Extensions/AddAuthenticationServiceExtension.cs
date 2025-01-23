@@ -2,9 +2,9 @@
 
 namespace BitzArt.Blazor.Auth.Server;
 
-internal static class ServerSideAddAuthenticationServiceExtensions
+internal static class AddAuthenticationServiceExtension
 {
-    public static IServiceCollection AddAuthenticationService<TAuthenticationService>(this IServiceCollection services)
+    public static AuthenticationServiceSignature AddAuthenticationService<TAuthenticationService>(this IServiceCollection services)
         where TAuthenticationService : class, IAuthenticationService
     {
         services.AddScoped<TAuthenticationService>();
@@ -15,7 +15,7 @@ internal static class ServerSideAddAuthenticationServiceExtensions
         var registrationInterfaces = GetRegistrationInterfaces(signature);
         foreach (var registration in registrationInterfaces) services.AddScoped(registration, x => x.GetRequiredService<TAuthenticationService>());
 
-        return services;
+        return signature;
     }
 
     private static AuthenticationServiceSignature GetSignature(Type serviceType)

@@ -22,7 +22,7 @@ public static partial class MapAuthEndpointsExtension
             if (payloadType is null)
                 return Results.BadRequest("The registered IAuthenticationService does not implement Sign-In functionality.");
 
-            var authService = serviceProvider.GetRequiredService<IAuthenticationService>()
+            var userService = serviceProvider.GetRequiredService<StaticUserService>()
                 ?? throw new UnreachableException();
 
             var context = httpContextAccessor.HttpContext
@@ -34,13 +34,13 @@ public static partial class MapAuthEndpointsExtension
 
             if (payload is null) return Results.BadRequest("Invalid Sign-In payload.");
 
-            var method = typeof(IAuthenticationService<>)
+            var method = typeof(StaticUserService<>)
                 .MakeGenericType(payloadType)
-                .GetMethod(nameof(IAuthenticationService<object>.SignInAsync))!;
+                .GetMethod(nameof(StaticUserService<object>.SignInAsync))!;
 
-            var result = await (Task<AuthenticationResult>)method.Invoke(authService, [payload])!;
+            var authResult = await (Task<AuthenticationResult>)method.Invoke(userService, [payload])!;
 
-            return Results.Ok(result);
+            return Results.Ok(authResult);
         });
 
         return builder;

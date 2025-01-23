@@ -29,7 +29,9 @@ public static class ClientSideAddBlazorAuthExtension
         builder.Services.AddScoped<ClientSideAuthenticationStateProvider>();
         builder.Services.AddScoped<AuthenticationStateProvider>(x => x.GetRequiredService<ClientSideAuthenticationStateProvider>());
 
-        builder.Services.AddScoped<IUserService, ClientSideUserService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped(typeof(IUserService<>), typeof(UserService<>));
+        builder.Services.AddScoped(typeof(IUserService<,>), typeof(UserService<,>));
 
         return builder;
     }

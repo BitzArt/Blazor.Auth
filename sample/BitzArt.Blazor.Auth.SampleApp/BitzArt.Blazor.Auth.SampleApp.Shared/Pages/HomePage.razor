@@ -39,7 +39,7 @@
 @code
 {
     [Inject] NavigationManager NavigationManager { get; set; } = null!;
-    [Inject] IUserService UserService { get; set; } = null!;
+    [Inject] IUserService<SignInPayload> UserService { get; set; } = null!;
 
     private async Task SignInAsync()
     {
