@@ -5,16 +5,16 @@ using System.Security.Claims;
 
 namespace BitzArt.Blazor.Auth.Server;
 
-internal class ServerSidePrerenderAuthenticationStateProvider(
+internal class StaticAuthenticationStateProvider(
     IHttpContextAccessor httpContextAccessor,
     IIdentityClaimsService claimsService,
     IAuthenticationService authenticationService,
-    ILoggerFactory loggerFactory)
+    ILoggerFactory loggerFactory) : AuthenticationStateProvider
 {
     private readonly ILogger logger = loggerFactory.CreateLogger("Blazor.Auth");
     private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
 
-    public async Task<AuthenticationState> GetPrerenderAuthenticationStateAsync()
+    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var httpContext = httpContextAccessor.HttpContext ?? throw new Exception("HttpContext is not available.");
     

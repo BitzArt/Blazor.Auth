@@ -14,17 +14,11 @@ internal static class AddUserServiceExtension
 
         foreach (var globalInterface in globalInterfaces)
         {
-            services.AddScoped(globalInterface, serviceProvider =>
+            services.AddScoped(globalInterface, (serviceProvider, interactivityStatus) =>
             {
-                var httpContextAccessor = serviceProvider.GetRequiredService<IHttpContextAccessor>();
-                var httpContext = httpContextAccessor.HttpContext
-                    ?? throw new InvalidOperationException("The HttpContext is not available.");
-
-                var isStatic = !httpContext.Response.HasStarted;
-
-                return isStatic
-                    ? serviceProvider.GetRequiredService(staticServiceImplementationType)
-                    : serviceProvider.GetRequiredService(interactiveServiceImplementationType);
+                return interactivityStatus.IsInteractive
+                    ? serviceProvider.GetRequiredService(interactiveServiceImplementationType)
+                    : serviceProvider.GetRequiredService(staticServiceImplementationType);
             });
         }
 

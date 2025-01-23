@@ -1,6 +1,7 @@
 ﻿using BitzArt.Blazor.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -46,9 +47,10 @@ public static class ServerSideAddBlazorAuthExtensions
 
         builder.Services.AddCascadingAuthenticationState();
 
+        builder.Services.AddServerSideInteractivityStatus();
+        builder.Services.AddServerSideAuthenticationStateProvider();
+
         builder.Services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
-        builder.Services.AddScoped<AuthenticationStateProvider, ServerSideAuthenticationStateProvider>();
-        builder.Services.AddScoped<ServerSidePrerenderAuthenticationStateProvider>();
 
         var authServiceSignature = builder.Services.AddAuthenticationService<TAuthenticationService>();
         builder.Services.AddUserService(authServiceSignature);

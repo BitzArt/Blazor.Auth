@@ -5,10 +5,9 @@ using System.Security.Claims;
 
 namespace BitzArt.Blazor.Auth.Server;
 
-internal class ServerSideAuthenticationStateProvider(
+internal class InteractiveAuthenticationStateProvider(
     ILoggerFactory loggerFactory,
     ICookieService cookieService,
-    ServerSidePrerenderAuthenticationStateProvider prerenderAuth,
     IIdentityClaimsService claimsService,
     IUserService userService)
     : AuthenticationStateProvider
@@ -23,15 +22,7 @@ internal class ServerSideAuthenticationStateProvider(
 
         IEnumerable<Cookie>? cookies = null;
 
-        try
-        {
-            cookies = await cookieService.GetAllAsync();
-        }
-        catch (Exception)
-        {
-            _logger.LogDebug("Using IPrerenderAuthenticationStateProvider to retrieve user authentication state.");
-            return await prerenderAuth.GetPrerenderAuthenticationStateAsync();
-        }
+        cookies = await cookieService.GetAllAsync();
 
         if (cookies is null) throw new Exception("No cookies array was found.");
 
