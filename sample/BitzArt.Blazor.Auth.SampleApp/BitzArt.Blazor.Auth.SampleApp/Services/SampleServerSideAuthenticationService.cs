@@ -3,18 +3,20 @@
 namespace BitzArt.Blazor.Auth.SampleApp.Services;
 
 public class SampleServerSideAuthenticationService(JwtService jwtService)
-    : AuthenticationService<SignInPayload, object>()
+    : AuthenticationService<SignInPayload>()
 {
-    protected override Task<AuthenticationResult> GetSignInResultAsync(SignInPayload signInPayload)
+    public override Task<AuthenticationResult> SignInAsync(SignInPayload signInPayload)
     {
-        var authResult = AuthenticationResult.Success(jwtService.BuildJwtPair());
+        var jwtPair = jwtService.BuildJwtPair();
+        var authResult = AuthenticationResult.Success(jwtPair);
 
         return Task.FromResult(authResult);
     }
 
     public override Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
     {
-        var authResult = AuthenticationResult.Success(jwtService.BuildJwtPair());
+        var jwtPair = jwtService.BuildJwtPair();
+        var authResult = AuthenticationResult.Success(jwtPair);
 
         return Task.FromResult(authResult);
     }

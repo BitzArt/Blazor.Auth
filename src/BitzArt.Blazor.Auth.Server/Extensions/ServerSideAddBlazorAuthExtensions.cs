@@ -7,12 +7,13 @@ using Microsoft.Extensions.Hosting;
 namespace BitzArt.Blazor.Auth.Server;
 
 /// <summary>
-/// Extension methods for setting up server-side Blazor.Auth services in a <see cref="IHostApplicationBuilder"/>.
+/// Contains extension methods for setting up server-side Blazor.Auth services in a <see cref="IHostApplicationBuilder"/>.
 /// </summary>
-public static class ServerSideAddBlazorAuthExtension
+public static class ServerSideAddBlazorAuthExtensions
 {
     /// <summary>
-    /// Adds server-side Blazor.Auth services to the specified <see cref="IHostApplicationBuilder"/>.
+    /// Adds server-side Blazor.Auth services to the specified <see cref="IHostApplicationBuilder"/>, <br />
+    /// using default implementations of <see cref="IAuthenticationService"/> and <see cref="IIdentityClaimsService"/>.
     /// </summary>
     /// <param name="builder">The <see cref="IHostApplicationBuilder"/> to add services to.</param>
     /// <returns><see cref="IHostApplicationBuilder"/> to allow chaining.</returns>
@@ -21,19 +22,24 @@ public static class ServerSideAddBlazorAuthExtension
         return builder.AddBlazorAuth<DefaultAuthenticationService, IdentityClaimsService>();
     }
 
-    /// <inheritdoc cref="AddBlazorAuth"/>
-    /// <typeparam name="TServerSideAuthenticationService">The type of the server-side authentication service.</typeparam>
-    public static IHostApplicationBuilder AddBlazorAuth<TServerSideAuthenticationService>(this IHostApplicationBuilder builder)
-        where TServerSideAuthenticationService : class, IAuthenticationService
+    /// <summary>
+    /// Adds server-side Blazor.Auth services to the specified <see cref="IHostApplicationBuilder"/>, <br />
+    /// using the default implementation of <see cref="IIdentityClaimsService"/>.
+    /// </summary>
+    /// <typeparam name="TAuthenticationService">The type of the server-side authentication service.</typeparam>
+    public static IHostApplicationBuilder AddBlazorAuth<TAuthenticationService>(this IHostApplicationBuilder builder)
+        where TAuthenticationService : class, IAuthenticationService
     {
-        return builder.AddBlazorAuth<TServerSideAuthenticationService, IdentityClaimsService>();
+        return builder.AddBlazorAuth<TAuthenticationService, IdentityClaimsService>();
     }
 
-    /// <inheritdoc cref="AddBlazorAuth"/>
-    /// <typeparam name="TServerSideAuthenticationService">The type of the server-side authentication service.</typeparam>
+    /// <summary>
+    /// Adds server-side Blazor.Auth services to the specified <see cref="IHostApplicationBuilder"/>.
+    /// </summary>
+    /// <typeparam name="TAuthenticationService">The type of the server-side authentication service.</typeparam>
     /// <typeparam name="TIdentityClaimsService">The type of the identity claims service.</typeparam>
-    public static IHostApplicationBuilder AddBlazorAuth<TServerSideAuthenticationService, TIdentityClaimsService>(this IHostApplicationBuilder builder)
-        where TServerSideAuthenticationService : class, IAuthenticationService
+    public static IHostApplicationBuilder AddBlazorAuth<TAuthenticationService, TIdentityClaimsService>(this IHostApplicationBuilder builder)
+        where TAuthenticationService : class, IAuthenticationService
         where TIdentityClaimsService : class, IIdentityClaimsService
     {
         builder.AddBlazorCookies();
@@ -44,14 +50,13 @@ public static class ServerSideAddBlazorAuthExtension
         builder.Services.AddScoped<AuthenticationStateProvider, ServerSideAuthenticationStateProvider>();
         builder.Services.AddScoped<ServerSidePrerenderAuthenticationStateProvider>();
 
+        builder.AddAuthenticationService<TAuthenticationService>();
+
         // Fix for issue: https://github.com/dotnet/aspnetcore/issues/52317
         builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, CustomAuthorizationMiddlewareResultHandler>();
 
         // UserService
         builder.Services.AddScoped<IUserService, ServerSideUserService>();
-
-        // AuthenticationService
-        builder.Services.AddScoped<IAuthenticationService, TServerSideAuthenticationService>();
 
         return builder;
     }

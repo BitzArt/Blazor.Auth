@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace BitzArt.Blazor.Auth.Server;
@@ -11,17 +13,32 @@ public static partial class MapAuthEndpointsExtension
     private static IEndpointRouteBuilder MapAuthSignUpEndpoint(this IEndpointRouteBuilder builder)
     {
         builder.MapPost("/_auth/sign-up", async (
-            [FromServices] IAuthenticationService authService,
+            [FromServices] AuthenticationServiceSignature authServiceSignature,
+            [FromServices] IServiceProvider serviceProvider,
             [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {
-            var type = authService.GetSignUpPayloadType() ?? throw new NotImplementedException();
+            var payloadType = authServiceSignature.SignUpPayloadType;
 
-            var context = httpContextAccessor.HttpContext;
-            using StreamReader reader = new(context!.Request.Body);
+            if (payloadType is null)
+                return Results.BadRequest("The registered IAuthenticationService does not implement Sign-Up functionality.");
+
+            var authService = serviceProvider.GetRequiredService<IAuthenticationService>()
+                ?? throw new UnreachableException();
+
+            var context = httpContextAccessor.HttpContext
+                ?? throw new InvalidOperationException("The HttpContext is not available.");
+
+            using StreamReader reader = new(context.Request.Body);
             var bodyAsString = await reader.ReadToEndAsync();
-            var payload = JsonSerializer.Deserialize(bodyAsString, type, Constants.JsonSerializerOptions);
+            var payload = JsonSerializer.Deserialize(bodyAsString, payloadType, Constants.JsonSerializerOptions);
 
-            var result = await authService.SignUpAsync(payload!);
+            if (payload is null) return Results.BadRequest("Invalid Sign-In payload.");
+
+            var method = typeof(IAuthenticationService<>)
+                .MakeGenericType(payloadType)
+                .GetMethod(nameof(IAuthenticationService<object,object>.SignUpAsync))!;
+
+            var result = await (Task<AuthenticationResult>)method.Invoke(authService, [payload])!;
 
             return Results.Ok(result);
         });

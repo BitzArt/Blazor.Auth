@@ -11,7 +11,7 @@ public static partial class MapAuthEndpointsExtension
     private static IEndpointRouteBuilder MapAuthRefreshEndpoint(this IEndpointRouteBuilder builder)
     {
         builder.MapPost("/_auth/refresh", async (
-            IAuthenticationService authService,
+            [FromServices] IAuthenticationService authService,
             [FromServices] IHttpContextAccessor httpContextAccessor) =>
         {
             var context = httpContextAccessor.HttpContext;
