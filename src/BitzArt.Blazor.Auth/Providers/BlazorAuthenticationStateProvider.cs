@@ -22,6 +22,7 @@ public class BlazorAuthenticationStateProvider(
     private AuthenticationState Save(AuthenticationState state)
     {
         _authenticationState = state;
+        NotifyAuthenticationStateChanged(Task.FromResult(state));
         return state;
     }
 
