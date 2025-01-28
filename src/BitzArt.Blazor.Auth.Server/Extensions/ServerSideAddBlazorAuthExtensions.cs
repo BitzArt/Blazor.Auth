@@ -44,6 +44,7 @@ public static class ServerSideAddBlazorAuthExtensions
         where TIdentityClaimsService : class, IIdentityClaimsService
     {
         builder.AddBlazorCookies();
+        builder.Services.AddScoped<IBlazorAuthLogger, BlazorAuthLogger>();
 
         builder.Services.AddCascadingAuthenticationState();
 

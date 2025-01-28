@@ -1,10 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace BitzArt.Blazor.Auth.Client;
+namespace BitzArt.Blazor.Auth;
 
-internal class ClientSideLogger(ILoggerFactory factory) : ILogger
+internal class BlazorAuthLogger : IBlazorAuthLogger
 {
-    private readonly ILogger _logger = factory.CreateLogger("Blazor.Auth.Client");
+    private protected virtual string CategoryName => "Blazor.Auth";
+
+    public BlazorAuthLogger(ILoggerFactory loggerFactory)
+    {
+        _logger = loggerFactory.CreateLogger(CategoryName);
+    }
+
+    private readonly ILogger _logger;
 
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull
         => _logger.BeginScope(state);

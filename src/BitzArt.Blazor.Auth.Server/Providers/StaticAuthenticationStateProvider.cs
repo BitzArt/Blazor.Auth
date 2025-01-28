@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
 
 namespace BitzArt.Blazor.Auth.Server;
 
@@ -9,12 +8,9 @@ internal class StaticAuthenticationStateProvider(
     IHttpContextAccessor httpContextAccessor,
     IIdentityClaimsService claimsService,
     IAuthenticationService authenticationService,
-    ILoggerFactory loggerFactory) : AuthenticationStateProvider
+    IBlazorAuthLogger logger) : BlazorAuthAuthenticationStateProvider
 {
-    private readonly ILogger logger = loggerFactory.CreateLogger("Blazor.Auth");
-    private static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
-
-    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    private protected override async Task<AuthenticationState> ResolveAuthenticationStateAsync()
     {
         var httpContext = httpContextAccessor.HttpContext ?? throw new Exception("HttpContext is not available.");
     

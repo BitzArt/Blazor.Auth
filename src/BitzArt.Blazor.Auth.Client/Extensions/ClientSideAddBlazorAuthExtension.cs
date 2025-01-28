@@ -20,11 +20,10 @@ public static class ClientSideAddBlazorAuthExtension
         builder.AddBlazorCookies();
 
         builder.AddBlazorAuthHostClient();
+        builder.Services.AddScoped<IBlazorAuthLogger, BlazorAuthLogger>();
 
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();
-
-        builder.Services.AddTransient<ClientSideLogger>();
 
         builder.Services.AddScoped<ClientSideAuthenticationStateProvider>();
         builder.Services.AddScoped<AuthenticationStateProvider>(x => x.GetRequiredService<ClientSideAuthenticationStateProvider>());

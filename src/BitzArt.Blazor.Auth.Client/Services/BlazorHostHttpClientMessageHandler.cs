@@ -2,12 +2,12 @@
 
 namespace BitzArt.Blazor.Auth.Client;
 
-internal class BlazorHostHttpClientMessageHandler(ClientSideLogger logger)
+internal class BlazorHostHttpClientMessageHandler(BlazorAuthLogger logger)
     : DelegatingHandler
 {
     private const string _errorMessage = "An error occurred while sending authentication request to the host. See inner exception for details.";
 
-    private readonly ClientSideLogger _logger = logger;
+    private readonly BlazorAuthLogger _logger = logger;
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {

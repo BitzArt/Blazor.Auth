@@ -6,8 +6,8 @@ using System.Text.Json;
 namespace BitzArt.Blazor.Auth.Client;
 
 internal class ClientSideAuthenticationStateProvider(
-    ClientSideLogger logger,
-    BlazorHostHttpClient hostClient)
+    BlazorHostHttpClient hostClient,
+    IBlazorAuthLogger logger)
     : AuthenticationStateProvider
 {
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()

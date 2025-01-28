@@ -4,10 +4,10 @@ using System.Text.Json;
 
 namespace BitzArt.Blazor.Auth.Client;
 
-internal class BlazorHostHttpClient(HttpClient httpClient, ClientSideLogger logger)
+internal class BlazorHostHttpClient(HttpClient httpClient, IBlazorAuthLogger logger)
 {
     private readonly HttpClient _httpClient = httpClient;
-    private readonly ILogger _logger = logger;
+    private readonly IBlazorAuthLogger _logger = logger;
 
     public HttpClient HttpClient => _httpClient;
 
