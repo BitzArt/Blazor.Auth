@@ -49,7 +49,7 @@ public static class ServerSideAddBlazorAuthExtensions
         builder.Services.AddCascadingAuthenticationState();
 
         builder.Services.AddServerSideInteractivityStatus();
-        builder.Services.AddServerSideAuthenticationStateProvider();
+        builder.Services.AddScoped<AuthenticationStateProvider, BlazorAuthAuthenticationStateProvider>();
 
         builder.Services.AddScoped<IIdentityClaimsService, TIdentityClaimsService>();
 

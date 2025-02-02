@@ -1,8 +1,15 @@
-﻿namespace BitzArt.Blazor.Auth.Server;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+
+namespace BitzArt.Blazor.Auth.Server;
 
 // Interactive server-side implementation of the user service.
 internal class InteractiveUserService() : IUserService
 {
+    public Task<AuthenticationState> GetAuthenticationStateAsync()
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken)
     {
         throw new NotImplementedException();

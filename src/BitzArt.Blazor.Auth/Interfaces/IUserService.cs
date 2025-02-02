@@ -1,10 +1,18 @@
-﻿namespace BitzArt.Blazor.Auth;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+
+namespace BitzArt.Blazor.Auth;
 
 /// <summary>
 /// A service responsible for authentication functionality.
 /// </summary>
 public interface IUserService
 {
+    /// <summary>
+    /// Resolves the current User's authentication state.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public Task<AuthenticationState> GetAuthenticationStateAsync();
+
     /// <summary>
     /// Refresh the current User's JWT pair.
     /// </summary>

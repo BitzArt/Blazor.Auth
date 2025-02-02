@@ -1,13 +1,63 @@
 ﻿using BitzArt.Blazor.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace BitzArt.Blazor.Auth.Server;
 
 // Static server-side implementation of the user service.
 internal class StaticUserService(
+    IBlazorAuthLogger logger,
     IAuthenticationService authService,
-    ICookieService cookieService
+    ICookieService cookieService,
+    IIdentityClaimsService claimsService
     ) : IUserService
 {
+    private protected static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
+
+    public async Task<AuthenticationState> GetAuthenticationStateAsync()
+    {
+        var cookies = (await cookieService.GetAllAsync())
+            .ToDictionary(x => x.Key);
+
+        var accessTokenFound = cookies.TryGetValue(Cookies.AccessToken, out var accessTokenCookie);
+
+        if (accessTokenFound && !string.IsNullOrWhiteSpace(accessTokenCookie!.Value))
+        {
+            logger.LogDebug("Access token was found in request cookies.");
+            var principal = await claimsService.BuildClaimsPrincipalAsync(accessTokenCookie!.Value);
+            return new AuthenticationState(principal);
+        }
+
+        logger.LogDebug("Access token was not found in request cookies.");
+
+        var refreshTokenFound = cookies.TryGetValue(Cookies.RefreshToken, out var refreshTokenCookie);
+
+        if (refreshTokenFound && !string.IsNullOrWhiteSpace(refreshTokenCookie!.Value))
+        {
+            logger.LogDebug("Refresh token was found in cookies. Refreshing the user's JWT pair...");
+
+            var refreshResult = await authService.RefreshJwtPairAsync(refreshTokenCookie!.Value);
+
+            if (!refreshResult.IsSuccess)
+            {
+                logger.LogWarning("Failed to refresh the user's JWT pair.");
+                return UnauthorizedState;
+            }
+
+            await SaveJwtPair(refreshResult.JwtPair);
+            var principal = await claimsService.BuildClaimsPrincipalAsync(refreshResult.JwtPair!.AccessToken!);
+
+            logger.LogDebug("User's JWT pair was successfully refreshed.");
+
+            return new AuthenticationState(principal);
+        }
+
+        logger.LogDebug("Refresh token was not found in cookies.");
+        return UnauthorizedState;
+    }
+
     public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken)
     {
         var authResult = await authService.RefreshJwtPairAsync(refreshToken) ?? throw new Exception("Authentication result is null.");
@@ -29,10 +79,22 @@ internal class StaticUserService(
         if (jwtPair is null) return;
 
         if (!string.IsNullOrWhiteSpace(jwtPair.AccessToken))
-            await cookieService.SetAsync(Cookies.AccessToken, jwtPair.AccessToken!, jwtPair.AccessTokenExpiresAt);
+            await cookieService.SetAsync(
+                Cookies.AccessToken,
+                jwtPair.AccessToken!,
+                jwtPair.AccessTokenExpiresAt,
+                httpOnly: true,
+                secure: true,
+                sameSiteMode: SameSiteMode.Strict);
 
         if (!string.IsNullOrWhiteSpace(jwtPair.RefreshToken))
-            await cookieService.SetAsync(Cookies.RefreshToken, jwtPair.RefreshToken!, jwtPair.RefreshTokenExpiresAt);
+            await cookieService.SetAsync(
+                Cookies.RefreshToken,
+                jwtPair.RefreshToken!,
+                jwtPair.RefreshTokenExpiresAt,
+                httpOnly: true,
+                secure: true,
+                sameSiteMode: SameSiteMode.Strict);
     }
 
     internal static UserServiceRegistrationInfo GetServiceRegistrationInfo(AuthenticationServiceSignature signature)
@@ -54,9 +116,11 @@ internal class StaticUserService(
 }
 
 internal class StaticUserService<TSignInPayload>(
+    IBlazorAuthLogger logger,
     IAuthenticationService<TSignInPayload> authService,
-    ICookieService cookieService
-    ) : StaticUserService(authService, cookieService), IUserService<TSignInPayload>
+    ICookieService cookieService,
+    IIdentityClaimsService claimsService
+    ) : StaticUserService(logger, authService, cookieService, claimsService), IUserService<TSignInPayload>
 {
     private readonly IAuthenticationService<TSignInPayload> authServiceCasted = authService;
 
@@ -72,9 +136,11 @@ internal class StaticUserService<TSignInPayload>(
 }
 
 internal class StaticUserService<TSignInPayload, TSignUpPayload>(
+    IBlazorAuthLogger logger,
     IAuthenticationService<TSignInPayload, TSignUpPayload> authService,
-    ICookieService cookieService
-    ) : StaticUserService<TSignInPayload>(authService, cookieService), IUserService<TSignInPayload, TSignUpPayload>
+    ICookieService cookieService,
+    IIdentityClaimsService claimsService
+    ) : StaticUserService<TSignInPayload>(logger, authService, cookieService, claimsService), IUserService<TSignInPayload, TSignUpPayload>
 {
     private readonly IAuthenticationService<TSignInPayload,TSignUpPayload> authServiceCasted = authService;
 
