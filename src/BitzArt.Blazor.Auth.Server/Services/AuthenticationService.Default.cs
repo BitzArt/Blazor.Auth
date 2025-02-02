@@ -7,7 +7,7 @@
 /// </summary>
 internal class DefaultAuthenticationService : AuthenticationService
 {
-    public override Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
+    public override Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(AuthenticationResult.Failure($"{nameof(IAuthenticationService)}.{nameof(RefreshJwtPairAsync)} is not implemented."));
     }

@@ -1,23 +1,112 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
+using System.Runtime.CompilerServices;
 
 namespace BitzArt.Blazor.Auth.Server;
 
 // Interactive server-side implementation of the user service.
-internal class InteractiveUserService() : IUserService
+internal class InteractiveUserService(
+    IBlazorAuthLogger logger,
+    NavigationManager navigation,
+    IJSRuntime js) : IUserService
 {
-    public Task<AuthenticationState> GetAuthenticationStateAsync()
+    private protected readonly IBlazorAuthLogger Logger = logger;
+    private protected readonly NavigationManager Navigation = navigation;
+    private protected readonly IJSRuntime Js = js;
+
+    public async Task<AuthenticationState> GetAuthenticationStateAsync(CancellationToken cancellationToken = default)
+        => await DoWhileLogging(async ()
+            => await DoWithJsModule(async (module)
+                =>
+                {
+                    var baseUri = GetBaseUri();
+                    var url = $"{baseUri.TrimEnd('/')}/_auth/me";
+
+                    var response = await module.InvokeAsync<ClaimsPrincipalDto>(
+                        "requestAsync",
+                        cancellationToken: cancellationToken,
+                        [url, HttpMethod.Get.Method, null, "json"]);
+
+                    var principal = response.ToModel();
+
+                    return new AuthenticationState(principal);
+                }));
+
+    public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
+        => await DoWhileLogging(async ()
+            => await DoWithJsModule(async (module)
+                =>
+                {
+                    var baseUri = GetBaseUri();
+                    var url = $"{baseUri.TrimEnd('/')}/_auth/refresh";
+
+                    var result = await module.InvokeAsync<AuthenticationResultInfo>(
+                        "requestAsync",
+                        cancellationToken: cancellationToken,
+                        [url, HttpMethod.Post.Method, refreshToken, "json"])
+                        ?? throw new InvalidOperationException("Failed to deserialize the authentication result info.");
+
+                    return result;
+                }));
+
+    public async Task SignOutAsync(CancellationToken cancellationToken = default)
+        => await DoWhileLogging(async ()
+            => await DoWithJsModule(async (module)
+                =>
+                {
+                    var baseUri = GetBaseUri();
+                    var url = $"{baseUri.TrimEnd('/')}/_auth/sign-out";
+
+                    await module.InvokeVoidAsync(
+                        "requestAsync",
+                        cancellationToken: cancellationToken,
+                        [url, HttpMethod.Post.Method, null, null]);
+
+                    return true;
+                }));
+
+    private protected string GetBaseUri()
     {
-        throw new NotImplementedException();
+        var baseUri = Navigation.BaseUri;
+        Logger.LogDebug("BaseUri: {baseUri}", baseUri);
+        return baseUri;
     }
 
-    public Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken)
+    private protected async Task<T> DoWithJsModule<T>(Func<IJSObjectReference, Task<T>> action)
     {
-        throw new NotImplementedException();
+        var module = await Js.InvokeAsync<IJSObjectReference>("import", "./_content/BitzArt.Blazor.Auth.Server/auth.js");
+
+        try
+        {
+            var actionTask = action.Invoke(module);
+            return await actionTask;
+        }
+        finally
+        {
+            await module.DisposeAsync();
+        }
     }
 
-    public Task SignOutAsync()
+    private protected async Task<T> DoWhileLogging<T>(Func<Task<T>> action, [CallerMemberName] string operationName = "")
     {
-        throw new NotImplementedException();
+        Logger.LogDebug("{operationName} was called.", operationName);
+
+        try
+        {
+            var actionTask = action.Invoke();
+            var result = await actionTask;
+
+            Logger.LogDebug("{operationName} completed.", operationName);
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "An error occurred while executing the action.");
+            throw;
+        }
     }
 
     internal static UserServiceRegistrationInfo GetServiceRegistrationInfo(AuthenticationServiceSignature signature)
@@ -38,18 +127,49 @@ internal class InteractiveUserService() : IUserService
     private static Type GetServiceSignUpType(AuthenticationServiceSignature signature) => typeof(InteractiveUserService<,>).MakeGenericType(signature.SignInPayloadType!, signature.SignUpPayloadType!);
 }
 
-internal class InteractiveUserService<TSignInPayload> : InteractiveUserService, IUserService<TSignInPayload>
+internal class InteractiveUserService<TSignInPayload>(
+    IBlazorAuthLogger logger,
+    NavigationManager navigation,
+    IJSRuntime js
+    ) : InteractiveUserService(logger, navigation, js), IUserService<TSignInPayload>
 {
-    public Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default)
+        => await DoWhileLogging(async ()
+            => await DoWithJsModule(async (module)
+                =>
+                {
+                    var baseUri = GetBaseUri();
+                    var url = $"{baseUri.TrimEnd('/')}/_auth/sign-in";
+
+                    var result = await module.InvokeAsync<AuthenticationResultInfo>(
+                        "requestAsync",
+                        cancellationToken: cancellationToken,
+                        [url, HttpMethod.Post.Method, signInPayload, "json"])
+                        ?? throw new InvalidOperationException("Failed to deserialize the authentication result info.");
+
+                    return result;
+                }));
 }
 
-internal class InteractiveUserService<TSignInPayload, TSignUpPayload> : InteractiveUserService<TSignInPayload>, IUserService<TSignInPayload, TSignUpPayload>
+internal class InteractiveUserService<TSignInPayload, TSignUpPayload>(
+    IBlazorAuthLogger logger,
+    NavigationManager navigation,
+    IJSRuntime js) : InteractiveUserService<TSignInPayload>(logger, navigation, js), IUserService<TSignInPayload, TSignUpPayload>
 {
-    public virtual Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
+        => await DoWhileLogging(async ()
+            => await DoWithJsModule(async (module)
+                =>
+                {
+                    var baseUri = GetBaseUri();
+                    var url = $"{baseUri.TrimEnd('/')}/_auth/sign-up";
+
+                    var result = await module.InvokeAsync<AuthenticationResultInfo>(
+                        "requestAsync",
+                        cancellationToken: cancellationToken,
+                        [url, HttpMethod.Post.Method, signUpPayload, "json"])
+                        ?? throw new InvalidOperationException("Failed to deserialize the authentication result info.");
+
+                    return result;
+                }));
 }

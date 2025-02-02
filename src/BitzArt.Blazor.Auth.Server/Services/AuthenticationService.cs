@@ -7,9 +7,10 @@ public abstract class AuthenticationService : IAuthenticationService
     /// Refresh the current User's JWT pair.
     /// </summary>
     /// <param name="refreshToken">The refresh token.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> containing the <see cref="AuthenticationResult"/>
     /// received after refreshing the User's JWT Pair.</returns>
-    public abstract Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken);
+    public abstract Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default);
 
     /// <inheritdoc cref="AuthenticationResult.Success(JwtPair, IDictionary{string, object}?)"/>
     protected static AuthenticationResult Success(JwtPair jwtPair, IDictionary<string, object>? data = null)
@@ -27,8 +28,9 @@ public abstract class AuthenticationService<TSignInPayload> : AuthenticationServ
     /// Signs the User in.
     /// </summary>
     /// <param name="signInPayload">The sign-in payload.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> containing the <see cref="AuthenticationResult"/> received after signing the User in.</returns>
-    public abstract Task<AuthenticationResult> SignInAsync(TSignInPayload signInPayload);
+    public abstract Task<AuthenticationResult> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default);
 
     Type? IAuthenticationService<TSignInPayload>.GetSignInPayloadType() => typeof(TSignInPayload);
 }
@@ -44,8 +46,9 @@ public abstract class AuthenticationService<TSignInPayload, TSignUpPayload> : Au
     /// Signs the User up.
     /// </summary>
     /// <param name="signUpPayload">The sign-up payload.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> containing the <see cref="AuthenticationResult"/> received after signing the User up.</returns>
-    public abstract Task<AuthenticationResult> SignUpAsync(TSignUpPayload signUpPayload);
+    public abstract Task<AuthenticationResult> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default);
 
     Type? IAuthenticationService<TSignInPayload, TSignUpPayload>.GetSignUpPayloadType() => typeof(TSignUpPayload);
 }

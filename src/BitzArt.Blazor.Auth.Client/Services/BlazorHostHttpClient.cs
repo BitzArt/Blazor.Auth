@@ -13,33 +13,36 @@ internal class BlazorHostHttpClient(HttpClient httpClient, IBlazorAuthLogger log
 
     private const string _errorMessage = $"Failed to parse authentication response from the host. See inner exception for details.";
 
-    public async Task<TResponse> GetAsync<TResponse>(string requestUri)
+    public async Task<TResponse> GetAsync<TResponse>(string requestUri, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.GetAsync(requestUri);
-        return await ParseResponseAsync<TResponse>(response);
+        var response = await _httpClient.GetAsync(requestUri, cancellationToken);
+        return await ParseResponseAsync<TResponse>(response, cancellationToken);
     }
 
-    public async Task<TResponse> PostAsync<TResponse>(string requestUri, object value)
+    public async Task<TResponse> PostAsync<TResponse>(string requestUri, object value, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient.PostAsJsonAsync(requestUri, value, Constants.JsonSerializerOptions);
-        var result = await ParseResponseAsync<TResponse>(response);
+        var response = await _httpClient.PostAsJsonAsync(requestUri, value, Constants.JsonSerializerOptions, cancellationToken);
+        var result = await ParseResponseAsync<TResponse>(response, cancellationToken);
 
         return result;
     }
 
-    public async Task<HttpResponseMessage> GetAsync(string requestUri) => await _httpClient.PostAsync(requestUri, null);
+    public async Task<HttpResponseMessage> GetAsync(string requestUri, CancellationToken cancellationToken = default)
+        => await _httpClient.PostAsync(requestUri, null, cancellationToken);
 
-    public async Task<HttpResponseMessage> PostAsync(string requestUri) => await _httpClient.PostAsync(requestUri, null);
+    public async Task<HttpResponseMessage> PostAsync(string requestUri, CancellationToken cancellationToken = default)
+        => await _httpClient.PostAsync(requestUri, null, cancellationToken);
 
-    public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request) => await _httpClient.SendAsync(request);
+    public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
+        => await _httpClient.SendAsync(request, cancellationToken);
 
-    private async Task<TResult> ParseResponseAsync<TResult>(HttpResponseMessage response)
+    private async Task<TResult> ParseResponseAsync<TResult>(HttpResponseMessage response, CancellationToken cancellationToken = default)
     {
         try
         {
             response.Validate();
 
-            var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
             if (string.IsNullOrWhiteSpace(content))
                 throw new EmptyResponseException();

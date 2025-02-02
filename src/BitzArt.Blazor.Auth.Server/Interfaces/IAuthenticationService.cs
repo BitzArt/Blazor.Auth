@@ -9,9 +9,10 @@ public interface IAuthenticationService
     /// Refresh the current User's JWT pair.
     /// </summary>
     /// <param name="refreshToken">The refresh token.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> containing the <see cref="AuthenticationResult"/>
     /// received after refreshing the User's JWT Pair.</returns>
-    public Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken);
+    public Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -24,9 +25,10 @@ public interface IAuthenticationService<TSignInPayload> : IAuthenticationService
     /// Sign the current User in.
     /// </summary>
     /// <param name="signInPayload">The sign-in payload.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> containing the <see cref="AuthenticationResult"/>
     /// received after signing the User in.</returns>
-    public Task<AuthenticationResult> SignInAsync(TSignInPayload signInPayload);
+    public Task<AuthenticationResult> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get the type of the sign-in payload.
@@ -46,9 +48,10 @@ public interface IAuthenticationService<TSignInPayload, TSignUpPayload> : IAuthe
     /// Sign the current User up.
     /// </summary>
     /// <param name="signUpPayload">The sign-up payload.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A <see cref="Task"/> containing the <see cref="AuthenticationResult"/>
     /// received after signing the User up.</returns>
-    public Task<AuthenticationResult> SignUpAsync(TSignUpPayload signUpPayload);
+    public Task<AuthenticationResult> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Get the type of the sign-up payload.

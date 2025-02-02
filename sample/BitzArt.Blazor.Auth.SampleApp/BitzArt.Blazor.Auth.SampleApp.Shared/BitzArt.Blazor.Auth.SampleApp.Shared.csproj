@@ -7,7 +7,6 @@
 		<RootNamespace>BitzArt.Blazor.Auth.SampleApp</RootNamespace>
 	</PropertyGroup>
 
-
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
@@ -28,7 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\..\src\BitzArt.Blazor.Auth\BitzArt.Blazor.Auth.csproj" />
+		<ProjectReference Include="..\..\..\src\BitzArt.Blazor.Auth\BitzArt.Blazor.Auth.csproj" />
 	</ItemGroup>
 
 </Project>

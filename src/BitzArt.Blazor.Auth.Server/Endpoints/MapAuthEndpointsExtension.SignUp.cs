@@ -15,7 +15,8 @@ public static partial class MapAuthEndpointsExtension
         builder.MapPost("/_auth/sign-up", async (
             [FromServices] AuthenticationServiceSignature authServiceSignature,
             [FromServices] IServiceProvider serviceProvider,
-            [FromServices] IHttpContextAccessor httpContextAccessor) =>
+            [FromServices] IHttpContextAccessor httpContextAccessor,
+            CancellationToken cancellationToken = default) =>
         {
             var payloadType = authServiceSignature.SignUpPayloadType;
 
@@ -29,7 +30,7 @@ public static partial class MapAuthEndpointsExtension
                 ?? throw new InvalidOperationException("The HttpContext is not available.");
 
             using StreamReader reader = new(context.Request.Body);
-            var bodyAsString = await reader.ReadToEndAsync();
+            var bodyAsString = await reader.ReadToEndAsync(cancellationToken);
             var payload = JsonSerializer.Deserialize(bodyAsString, payloadType, Constants.JsonSerializerOptions);
 
             if (payload is null) return Results.BadRequest("Invalid Sign-In payload.");
@@ -38,7 +39,7 @@ public static partial class MapAuthEndpointsExtension
                 .MakeGenericType(payloadType)
                 .GetMethod(nameof(StaticUserService<object,object>.SignUpAsync))!;
 
-            var info = await (Task<AuthenticationResultInfo>)method.Invoke(userService, [payload])!;
+            var info = await (Task<AuthenticationResultInfo>)method.Invoke(userService, [payload, cancellationToken])!;
 
             return Results.Ok(info);
         });

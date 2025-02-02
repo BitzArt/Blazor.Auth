@@ -16,7 +16,7 @@ internal class StaticUserService(
 {
     private protected static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
 
-    public async Task<AuthenticationState> GetAuthenticationStateAsync()
+    public async Task<AuthenticationState> GetAuthenticationStateAsync(CancellationToken cancellationToken = default)
     {
         var cookies = (await cookieService.GetAllAsync())
             .ToDictionary(x => x.Key);
@@ -38,7 +38,7 @@ internal class StaticUserService(
         {
             logger.LogDebug("Refresh token was found in cookies. Refreshing the user's JWT pair...");
 
-            var refreshResult = await authService.RefreshJwtPairAsync(refreshTokenCookie!.Value);
+            var refreshResult = await authService.RefreshJwtPairAsync(refreshTokenCookie!.Value, cancellationToken);
 
             if (!refreshResult.IsSuccess)
             {
@@ -46,7 +46,7 @@ internal class StaticUserService(
                 return UnauthorizedState;
             }
 
-            await SaveJwtPair(refreshResult.JwtPair);
+            await SaveJwtPairAsync(refreshResult.JwtPair, cancellationToken);
             var principal = await claimsService.BuildClaimsPrincipalAsync(refreshResult.JwtPair!.AccessToken!);
 
             logger.LogDebug("User's JWT pair was successfully refreshed.");
@@ -58,23 +58,24 @@ internal class StaticUserService(
         return UnauthorizedState;
     }
 
-    public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken)
+    public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
-        var authResult = await authService.RefreshJwtPairAsync(refreshToken) ?? throw new Exception("Authentication result is null.");
+        var authResult = await authService.RefreshJwtPairAsync(refreshToken, cancellationToken)
+            ?? throw new Exception("Authentication result is null.");
 
         if (authResult?.IsSuccess == true)
-            await SaveJwtPair(authResult?.JwtPair);
+            await SaveJwtPairAsync(authResult?.JwtPair, cancellationToken);
 
         return authResult!.GetInfo();
     }
 
-    public async Task SignOutAsync()
+    public async Task SignOutAsync(CancellationToken cancellationToken = default)
     {
-        await cookieService.RemoveAsync(Cookies.AccessToken);
-        await cookieService.RemoveAsync(Cookies.RefreshToken);
+        await cookieService.RemoveAsync(Cookies.AccessToken, cancellationToken);
+        await cookieService.RemoveAsync(Cookies.RefreshToken, cancellationToken);
     }
 
-    private protected async Task SaveJwtPair(JwtPair? jwtPair)
+    private protected async Task SaveJwtPairAsync(JwtPair? jwtPair, CancellationToken cancellationToken = default)
     {
         if (jwtPair is null) return;
 
@@ -85,7 +86,8 @@ internal class StaticUserService(
                 jwtPair.AccessTokenExpiresAt,
                 httpOnly: true,
                 secure: true,
-                sameSiteMode: SameSiteMode.Strict);
+                sameSiteMode: SameSiteMode.Strict,
+                cancellationToken: cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(jwtPair.RefreshToken))
             await cookieService.SetAsync(
@@ -94,7 +96,8 @@ internal class StaticUserService(
                 jwtPair.RefreshTokenExpiresAt,
                 httpOnly: true,
                 secure: true,
-                sameSiteMode: SameSiteMode.Strict);
+                sameSiteMode: SameSiteMode.Strict,
+                cancellationToken: cancellationToken);
     }
 
     internal static UserServiceRegistrationInfo GetServiceRegistrationInfo(AuthenticationServiceSignature signature)
@@ -124,12 +127,13 @@ internal class StaticUserService<TSignInPayload>(
 {
     private readonly IAuthenticationService<TSignInPayload> authServiceCasted = authService;
 
-    public async Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload)
+    public async Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default)
     {
-        var authResult = await authServiceCasted.SignInAsync(signInPayload) ?? throw new Exception("Authentication result is null.");
+        var authResult = await authServiceCasted.SignInAsync(signInPayload, cancellationToken)
+            ?? throw new Exception("Authentication result is null.");
 
         if (authResult.IsSuccess)
-            await SaveJwtPair(authResult?.JwtPair);
+            await SaveJwtPairAsync(authResult?.JwtPair, cancellationToken);
 
         return authResult!.GetInfo();
     }
@@ -144,12 +148,13 @@ internal class StaticUserService<TSignInPayload, TSignUpPayload>(
 {
     private readonly IAuthenticationService<TSignInPayload,TSignUpPayload> authServiceCasted = authService;
 
-    public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload)
+    public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
     {
-        var authResult = await authServiceCasted.SignUpAsync(signUpPayload) ?? throw new Exception("Authentication result is null.");
+        var authResult = await authServiceCasted.SignUpAsync(signUpPayload, cancellationToken)
+            ?? throw new Exception("Authentication result is null.");
 
         if (authResult?.IsSuccess == true)
-            await SaveJwtPair(authResult?.JwtPair);
+            await SaveJwtPairAsync(authResult?.JwtPair, cancellationToken);
 
         return authResult!.GetInfo();
     }

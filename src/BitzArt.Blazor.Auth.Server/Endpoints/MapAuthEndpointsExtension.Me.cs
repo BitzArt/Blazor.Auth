@@ -13,12 +13,12 @@ public static partial class MapAuthEndpointsExtension
     {
         builder.MapGet("/_auth/me", async (
             [FromServices] AuthenticationStateProvider authStateProvider,
-            [FromServices] IHttpContextAccessor httpContextAccessor) =>
+            [FromServices] IHttpContextAccessor httpContextAccessor,
+            CancellationToken cancellationToken = default) =>
         {
             var state = await authStateProvider.GetAuthenticationStateAsync();
             var principal = state.User;
-            var principalDto = principal.ToDto();
-            var result = JsonSerializer.Serialize(principalDto, Constants.JsonSerializerOptions);
+            var result = principal.ToDto();
 
             return Results.Ok(result);
         });

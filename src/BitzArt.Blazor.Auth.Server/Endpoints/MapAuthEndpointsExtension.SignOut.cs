@@ -9,9 +9,10 @@ public static partial class MapAuthEndpointsExtension
     private static IEndpointRouteBuilder MapAuthSignOutEndpoint(this IEndpointRouteBuilder builder)
     {
         builder.MapPost("/_auth/sign-out", async (
-            IUserService userService) =>
+            IUserService userService,
+            CancellationToken cancellationToken = default) =>
         {
-            await userService.SignOutAsync();
+            await userService.SignOutAsync(cancellationToken);
             return Results.Ok();
         });
 

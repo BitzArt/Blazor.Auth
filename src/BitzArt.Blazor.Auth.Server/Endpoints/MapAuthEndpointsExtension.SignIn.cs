@@ -16,33 +16,34 @@ public static partial class MapAuthEndpointsExtension
         builder.MapPost("/_auth/sign-in", async (
             [FromServices] AuthenticationServiceSignature authServiceSignature,
             [FromServices] IServiceProvider serviceProvider,
-            [FromServices] IHttpContextAccessor httpContextAccessor) =>
-        {
-            var payloadType = authServiceSignature.SignInPayloadType;
+            [FromServices] IHttpContextAccessor httpContextAccessor,
+            CancellationToken cancellationToken = default) =>
+            {
+                var payloadType = authServiceSignature.SignInPayloadType;
 
-            if (payloadType is null)
-                return Results.BadRequest("The registered IAuthenticationService does not implement Sign-In functionality.");
+                if (payloadType is null)
+                    return Results.BadRequest("The registered IAuthenticationService does not implement Sign-In functionality.");
 
-            var userService = serviceProvider.GetRequiredService<StaticUserService>()
-                ?? throw new UnreachableException();
+                var userService = serviceProvider.GetRequiredService<StaticUserService>()
+                    ?? throw new UnreachableException();
 
-            var context = httpContextAccessor.HttpContext
-                ?? throw new InvalidOperationException("The HttpContext is not available.");
+                var context = httpContextAccessor.HttpContext
+                    ?? throw new InvalidOperationException("The HttpContext is not available.");
 
-            using StreamReader reader = new(context.Request.Body);
-            var bodyAsString = await reader.ReadToEndAsync();
-            var payload = JsonSerializer.Deserialize(bodyAsString, payloadType, Constants.JsonSerializerOptions);
+                using StreamReader reader = new(context.Request.Body);
+                var bodyAsString = await reader.ReadToEndAsync(cancellationToken);
+                var payload = JsonSerializer.Deserialize(bodyAsString, payloadType, Constants.JsonSerializerOptions);
 
-            if (payload is null) return Results.BadRequest("Invalid Sign-In payload.");
+                if (payload is null) return Results.BadRequest("Invalid Sign-In payload.");
 
-            var method = typeof(StaticUserService<>)
-                .MakeGenericType(payloadType)
-                .GetMethod(nameof(StaticUserService<object>.SignInAsync))!;
+                var method = typeof(StaticUserService<>)
+                    .MakeGenericType(payloadType)
+                    .GetMethod(nameof(StaticUserService<object>.SignInAsync))!;
 
-            var info = await (Task<AuthenticationResultInfo>)method.Invoke(userService, [payload])!;
+                var info = await (Task<AuthenticationResultInfo>)method.Invoke(userService, [payload, cancellationToken])!;
 
-            return Results.Ok(info);
-        });
+                return Results.Ok(info);
+            });
 
         return builder;
     }

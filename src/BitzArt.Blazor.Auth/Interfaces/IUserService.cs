@@ -11,20 +11,20 @@ public interface IUserService
     /// Resolves the current User's authentication state.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public Task<AuthenticationState> GetAuthenticationStateAsync();
+    public Task<AuthenticationState> GetAuthenticationStateAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Refresh the current User's JWT pair.
     /// </summary>
     /// <returns>An <see cref="AuthenticationResultInfo"/> received
     /// after refreshing the User's JWT Pair and updating the Authentication State.</returns>
-    public Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken);
+    public Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Sign the current User out.
     /// </summary>
     /// <returns> A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public Task SignOutAsync();
+    public Task SignOutAsync(CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -38,7 +38,7 @@ public interface IUserService<TSignInPayload> : IUserService
     /// </summary>
     /// <returns>An <see cref="AuthenticationResultInfo"/> received
     /// after signing the User in and updating the Authentication State.</returns>
-    public Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload);
+    public Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -53,5 +53,5 @@ public interface IUserService<TSignInPayload, TSignUpPayload> : IUserService<TSi
     /// </summary>
     /// <returns>An <see cref="AuthenticationResultInfo"/> received
     /// after signing the User up and updating the Authentication State.</returns>
-    public Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload);
+    public Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default);
 }

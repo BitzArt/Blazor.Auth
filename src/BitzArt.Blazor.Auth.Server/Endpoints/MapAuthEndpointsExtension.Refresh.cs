@@ -12,14 +12,15 @@ public static partial class MapAuthEndpointsExtension
     {
         builder.MapPost("/_auth/refresh", async (
             [FromServices] IAuthenticationService authService,
-            [FromServices] IHttpContextAccessor httpContextAccessor) =>
+            [FromServices] IHttpContextAccessor httpContextAccessor,
+            CancellationToken cancellationToken = default) =>
         {
             var context = httpContextAccessor.HttpContext;
             using StreamReader reader = new(context!.Request.Body);
-            var bodyAsString = await reader.ReadToEndAsync();
+            var bodyAsString = await reader.ReadToEndAsync(cancellationToken);
             var refreshToken = JsonSerializer.Deserialize<string>(bodyAsString, Constants.JsonSerializerOptions);
 
-            var result = await authService.RefreshJwtPairAsync(refreshToken!);
+            var result = await authService.RefreshJwtPairAsync(refreshToken!, cancellationToken);
             var info = result.GetInfo();
 
             return Results.Ok(info);

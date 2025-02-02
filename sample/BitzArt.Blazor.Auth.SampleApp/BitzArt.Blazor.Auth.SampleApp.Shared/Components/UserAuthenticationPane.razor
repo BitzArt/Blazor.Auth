@@ -18,7 +18,7 @@
             {
                 <form method="post" @onsubmit="SignInAsync" @formname="sign-in-form">
                     <AntiforgeryToken />
-                    <div>
+                    <div style="margin-top:2rem;">
                         <button type="submit" class="btn btn-lg btn-primary">Sign In</button>
                     </div>
                 </form>
@@ -42,7 +42,7 @@
             {
                 <form method="post" @onsubmit="SignOutAsync" @formname="sign-out-form">
                     <AntiforgeryToken />
-                    <div>
+                    <div style="margin-top:2rem;">
                         <button type="submit" class="btn btn-lg btn-primary">Sign Out</button>
                     </div>
                 </form>
