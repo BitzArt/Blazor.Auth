@@ -18,9 +18,9 @@ public static class ClientSideAddBlazorAuthExtension
     public static WebAssemblyHostBuilder AddBlazorAuth(this WebAssemblyHostBuilder builder)
     {
         builder.AddBlazorCookies();
+        builder.Services.AddScoped<IBlazorAuthLogger, BlazorAuthLogger>();
 
         builder.AddBlazorAuthHostClient();
-        builder.Services.AddScoped<IBlazorAuthLogger, BlazorAuthLogger>();
 
         builder.Services.AddAuthorizationCore();
         builder.Services.AddCascadingAuthenticationState();
