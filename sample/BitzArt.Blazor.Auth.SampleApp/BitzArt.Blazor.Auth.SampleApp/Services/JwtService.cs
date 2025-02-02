@@ -17,7 +17,7 @@ public class JwtService
 
     public JwtService()
     {
-        var key = "MySigningKey";
+        var key = "aVeryLongSecretKeyThatIsAtLeast32BytesLong";
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         _signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
