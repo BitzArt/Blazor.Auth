@@ -20,8 +20,9 @@ public static partial class MapAuthEndpointsExtension
             var refreshToken = JsonSerializer.Deserialize<string>(bodyAsString, Constants.JsonSerializerOptions);
 
             var result = await authService.RefreshJwtPairAsync(refreshToken!);
+            var info = result.GetInfo();
 
-            return result;
+            return Results.Ok(info);
         });
 
         return builder;

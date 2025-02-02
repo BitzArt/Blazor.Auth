@@ -10,6 +10,14 @@ public abstract class AuthenticationService : IAuthenticationService
     /// <returns>A <see cref="Task"/> containing the <see cref="AuthenticationResult"/>
     /// received after refreshing the User's JWT Pair.</returns>
     public abstract Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken);
+
+    /// <inheritdoc cref="AuthenticationResult.Success(JwtPair, IDictionary{string, object}?)"/>
+    protected static AuthenticationResult Success(JwtPair jwtPair, IDictionary<string, object>? data = null)
+        => AuthenticationResult.Success(jwtPair, data);
+
+    /// <inheritdoc cref="AuthenticationResult.Failure(string, IDictionary{string, object}?)"/>
+    protected static AuthenticationResult Failure(string errorMessage)
+        => AuthenticationResult.Failure(errorMessage);
 }
 
 /// <inheritdoc cref="IAuthenticationService{TSignInPayload}"/>

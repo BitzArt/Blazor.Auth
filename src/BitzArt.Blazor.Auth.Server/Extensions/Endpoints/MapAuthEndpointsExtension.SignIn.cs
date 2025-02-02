@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,9 +39,9 @@ public static partial class MapAuthEndpointsExtension
                 .MakeGenericType(payloadType)
                 .GetMethod(nameof(StaticUserService<object>.SignInAsync))!;
 
-            var authResult = await (Task<AuthenticationResult>)method.Invoke(userService, [payload])!;
+            var info = await (Task<AuthenticationResultInfo>)method.Invoke(userService, [payload])!;
 
-            return Results.Ok(authResult);
+            return Results.Ok(info);
         });
 
         return builder;

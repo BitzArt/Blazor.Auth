@@ -8,14 +8,14 @@ internal class StaticUserService(
     ICookieService cookieService
     ) : IUserService
 {
-    public async Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
+    public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken)
     {
         var authResult = await authService.RefreshJwtPairAsync(refreshToken) ?? throw new Exception("Authentication result is null.");
 
         if (authResult?.IsSuccess == true)
             await SaveJwtPair(authResult?.JwtPair);
 
-        return authResult!;
+        return authResult!.GetInfo();
     }
 
     public async Task SignOutAsync()
@@ -35,22 +35,22 @@ internal class StaticUserService(
             await cookieService.SetAsync(Cookies.RefreshToken, jwtPair.RefreshToken!, jwtPair.RefreshTokenExpiresAt);
     }
 
-    internal static UserServiceRegistrationInfo GetRegistrationInfo(AuthenticationServiceSignature signature)
+    internal static UserServiceRegistrationInfo GetServiceRegistrationInfo(AuthenticationServiceSignature signature)
     {
         if (signature.SignInPayloadType is null)
-            return new(GetBasicServiceType());
+            return new(GetServiceBasicType());
 
         if (signature.SignUpPayloadType is null)
-            return new(GetSignInServiceType(signature),
-                [GetBasicServiceType()]);
+            return new(GetServiceSignInType(signature),
+                [GetServiceBasicType()]);
 
-        return new(GetSignUpServiceType(signature),
-            [GetBasicServiceType(), GetSignInServiceType(signature)]);
+        return new(GetServiceSignUpType(signature),
+            [GetServiceBasicType(), GetServiceSignInType(signature)]);
     }
 
-    private static Type GetBasicServiceType() => typeof(StaticUserService);
-    private static Type GetSignInServiceType(AuthenticationServiceSignature signature) => typeof(StaticUserService<>).MakeGenericType(signature.SignInPayloadType!);
-    private static Type GetSignUpServiceType(AuthenticationServiceSignature signature) => typeof(StaticUserService<,>).MakeGenericType(signature.SignInPayloadType!, signature.SignUpPayloadType!);
+    private static Type GetServiceBasicType() => typeof(StaticUserService);
+    private static Type GetServiceSignInType(AuthenticationServiceSignature signature) => typeof(StaticUserService<>).MakeGenericType(signature.SignInPayloadType!);
+    private static Type GetServiceSignUpType(AuthenticationServiceSignature signature) => typeof(StaticUserService<,>).MakeGenericType(signature.SignInPayloadType!, signature.SignUpPayloadType!);
 }
 
 internal class StaticUserService<TSignInPayload>(
@@ -60,14 +60,14 @@ internal class StaticUserService<TSignInPayload>(
 {
     private readonly IAuthenticationService<TSignInPayload> authServiceCasted = authService;
 
-    public async Task<AuthenticationResult> SignInAsync(TSignInPayload signInPayload)
+    public async Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload)
     {
         var authResult = await authServiceCasted.SignInAsync(signInPayload) ?? throw new Exception("Authentication result is null.");
 
         if (authResult.IsSuccess)
             await SaveJwtPair(authResult?.JwtPair);
 
-        return authResult!;
+        return authResult!.GetInfo();
     }
 }
 
@@ -78,13 +78,13 @@ internal class StaticUserService<TSignInPayload, TSignUpPayload>(
 {
     private readonly IAuthenticationService<TSignInPayload,TSignUpPayload> authServiceCasted = authService;
 
-    public async Task<AuthenticationResult> SignUpAsync(TSignUpPayload signUpPayload)
+    public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload)
     {
         var authResult = await authServiceCasted.SignUpAsync(signUpPayload) ?? throw new Exception("Authentication result is null.");
 
         if (authResult?.IsSuccess == true)
             await SaveJwtPair(authResult?.JwtPair);
 
-        return authResult!;
+        return authResult!.GetInfo();
     }
 }

@@ -5,8 +5,8 @@ internal class UserService(BlazorHostHttpClient hostClient) : IUserService
 {
     protected readonly BlazorHostHttpClient HostClient = hostClient;
 
-    public async Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken)
-        => await HostClient.PostAsync<AuthenticationResult>("/_auth/refresh", refreshToken);
+    public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken)
+        => await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/refresh", refreshToken);
 
     public async Task SignOutAsync()
     {
@@ -19,13 +19,13 @@ internal class UserService(BlazorHostHttpClient hostClient) : IUserService
 internal class UserService<TSignInPayload>(BlazorHostHttpClient hostClient)
     : UserService(hostClient), IUserService<TSignInPayload>
 {
-    public async Task<AuthenticationResult> SignInAsync(TSignInPayload signInPayload)
-        => await HostClient.PostAsync<AuthenticationResult>("/_auth/sign-in", signInPayload!);
+    public async Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload)
+        => await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/sign-in", signInPayload!);
 }
 
 internal class UserService<TSignInPayload, TSignUpPayload>(BlazorHostHttpClient hostClient)
     : UserService<TSignInPayload>(hostClient), IUserService<TSignInPayload, TSignUpPayload>
 {
-    public async Task<AuthenticationResult> SignUpAsync(TSignUpPayload signUpPayload)
-        => await HostClient.PostAsync<AuthenticationResult>("/_auth/sign-up", signUpPayload!);
+    public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload)
+        => await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/sign-up", signUpPayload!);
 }

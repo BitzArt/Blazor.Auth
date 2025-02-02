@@ -15,7 +15,7 @@ internal class Program
             .AddInteractiveWebAssemblyComponents();
 
         builder.Services.AddScoped<JwtService>();
-        builder.AddBlazorAuth<SampleServerSideAuthenticationService>();
+        builder.AddBlazorAuth<SampleAuthenticationService>();
 
         var app = builder.Build();
 

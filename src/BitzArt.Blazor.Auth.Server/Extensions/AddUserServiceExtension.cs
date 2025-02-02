@@ -27,7 +27,7 @@ internal static class AddUserServiceExtension
 
     private static Type AddStaticUserService(this IServiceCollection services, AuthenticationServiceSignature authServiceSignature)
     {
-        var registrationInfo = StaticUserService.GetRegistrationInfo(authServiceSignature);
+        var registrationInfo = StaticUserService.GetServiceRegistrationInfo(authServiceSignature);
 
         services.AddScoped(registrationInfo.ImplementationType);
         if (registrationInfo.AdditionalTypes is null) return registrationInfo.ImplementationType;
@@ -42,7 +42,7 @@ internal static class AddUserServiceExtension
 
     private static Type AddInteractiveUserService(this IServiceCollection services, AuthenticationServiceSignature authServiceSignature)
     {
-        var registrationInfo = InteractiveUserService.GetRegistrationInfo(authServiceSignature);
+        var registrationInfo = InteractiveUserService.GetServiceRegistrationInfo(authServiceSignature);
 
         services.AddScoped(registrationInfo.ImplementationType);
         if (registrationInfo.AdditionalTypes is null) return registrationInfo.ImplementationType;

@@ -8,9 +8,9 @@ public interface IUserService
     /// <summary>
     /// Refresh the current User's JWT pair.
     /// </summary>
-    /// <returns>An <see cref="AuthenticationResult"/> received
+    /// <returns>An <see cref="AuthenticationResultInfo"/> received
     /// after refreshing the User's JWT Pair and updating the Authentication State.</returns>
-    public Task<AuthenticationResult> RefreshJwtPairAsync(string refreshToken);
+    public Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken);
 
     /// <summary>
     /// Sign the current User out.
@@ -28,9 +28,9 @@ public interface IUserService<TSignInPayload> : IUserService
     /// <summary>
     /// Sign the current User in.
     /// </summary>
-    /// <returns>An <see cref="AuthenticationResult"/> received
+    /// <returns>An <see cref="AuthenticationResultInfo"/> received
     /// after signing the User in and updating the Authentication State.</returns>
-    public Task<AuthenticationResult> SignInAsync(TSignInPayload signInPayload);
+    public Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload);
 }
 
 /// <summary>
@@ -43,7 +43,7 @@ public interface IUserService<TSignInPayload, TSignUpPayload> : IUserService<TSi
     /// <summary>
     /// Sign the current User up.
     /// </summary>
-    /// <returns>An <see cref="AuthenticationResult"/> received
+    /// <returns>An <see cref="AuthenticationResultInfo"/> received
     /// after signing the User up and updating the Authentication State.</returns>
-    public Task<AuthenticationResult> SignUpAsync(TSignUpPayload signUpPayload);
+    public Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload);
 }

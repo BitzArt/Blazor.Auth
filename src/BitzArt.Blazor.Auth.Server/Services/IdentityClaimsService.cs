@@ -9,7 +9,7 @@ public class IdentityClaimsService() : IIdentityClaimsService
     private readonly JwtSecurityTokenHandler _tokenHandler = new();
 
     /// <inheritdoc/>
-    public virtual Task<ClaimsPrincipal> BuildClaimsPrincipalAsync(string accessToken)
+    public Task<ClaimsPrincipal> BuildClaimsPrincipalAsync(string accessToken)
     {
         return Task.FromResult(BuildClaimsPrincipal(accessToken));
     }
@@ -19,7 +19,7 @@ public class IdentityClaimsService() : IIdentityClaimsService
     /// </summary>
     /// <param name="accessToken"> The access token to build <see cref="ClaimsPrincipal"/> from. </param>
     /// <returns> A <see cref="ClaimsPrincipal"/> representing the user. </returns>
-    public virtual ClaimsPrincipal BuildClaimsPrincipal(string accessToken)
+    public ClaimsPrincipal BuildClaimsPrincipal(string accessToken)
     {
         var token = _tokenHandler.ReadJwtToken(accessToken);
 

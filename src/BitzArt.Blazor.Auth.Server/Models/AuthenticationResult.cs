@@ -1,34 +1,28 @@
-﻿using System.Text.Json.Serialization;
-
-namespace BitzArt.Blazor.Auth;
+﻿namespace BitzArt.Blazor.Auth;
 
 /// <summary>
-/// Represents the result of an authentication operation.
+/// Contains information about the result of an authentication operation.
 /// </summary>
 public class AuthenticationResult
 {
     /// <summary>
     /// Gets or sets a value indicating whether the authentication operation was successful.
     /// </summary>
-    [JsonPropertyName("isSuccess")]
     public bool IsSuccess { get; set; }
 
     /// <summary>
     /// Gets or sets the JWT pair.
     /// </summary>
-    [JsonPropertyName("jwtPair")]
     public JwtPair? JwtPair { get; set; }
 
     /// <summary>
     /// Gets or sets the error message, if any.
     /// </summary>
-    [JsonPropertyName("errorMessage")]
     public string? ErrorMessage { get; set; }
 
     /// <summary>
     /// Additional data.
     /// </summary>
-    [JsonExtensionData]
     public IDictionary<string, object> Data { get; set; }
 
     /// <summary>
@@ -39,8 +33,8 @@ public class AuthenticationResult
     /// <param name="errorMessage"> The error message, if any. </param>
     /// <param name="data"> Additional data. </param>
     public AuthenticationResult(
-        bool isSuccess = false,
-        JwtPair? jwtPair = null,
+        bool isSuccess,
+        JwtPair? jwtPair,
         string? errorMessage = null,
         IDictionary<string, object>? data = null)
     {
@@ -48,14 +42,6 @@ public class AuthenticationResult
         JwtPair = jwtPair;
         ErrorMessage = errorMessage;
         Data = data ?? new Dictionary<string, object>();
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AuthenticationResult"/> class.
-    /// </summary>
-    public AuthenticationResult()
-    {
-        Data = new Dictionary<string, object>();
     }
 
     /// <summary>
@@ -74,5 +60,11 @@ public class AuthenticationResult
     /// <param name="data"> Additional data. </param>
     /// <returns> A new instance of the <see cref="AuthenticationResult"/> class. </returns>
     public static AuthenticationResult Failure(string errorMessage, IDictionary<string, object>? data = null)
-        => new(false, errorMessage: errorMessage, data: data);
+        => new(false, jwtPair: null, errorMessage: errorMessage, data: data);
+
+    /// <summary>
+    /// Provides the <see cref="AuthenticationResultInfo"/> that can be sent to the client.
+    /// </summary>
+    /// <returns> The <see cref="AuthenticationResultInfo"/> representation of this <see cref="AuthenticationResult"/>. </returns>
+    public AuthenticationResultInfo GetInfo() => new(IsSuccess, ErrorMessage, Data);
 }
