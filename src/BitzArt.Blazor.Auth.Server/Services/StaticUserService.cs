@@ -1,5 +1,4 @@
 ﻿using BitzArt.Blazor.Cookies;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
@@ -146,7 +145,7 @@ internal class StaticUserService<TSignInPayload, TSignUpPayload>(
     IIdentityClaimsService claimsService
     ) : StaticUserService<TSignInPayload>(logger, authService, cookieService, claimsService), IUserService<TSignInPayload, TSignUpPayload>
 {
-    private readonly IAuthenticationService<TSignInPayload,TSignUpPayload> authServiceCasted = authService;
+    private readonly IAuthenticationService<TSignInPayload, TSignUpPayload> authServiceCasted = authService;
 
     public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
     {

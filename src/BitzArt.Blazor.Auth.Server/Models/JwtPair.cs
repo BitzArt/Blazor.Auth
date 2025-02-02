@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace BitzArt.Blazor.Auth;
+﻿namespace BitzArt.Blazor.Auth;
 
 /// <summary>
 /// Represents a pair of JWTs: an access token and a refresh token.

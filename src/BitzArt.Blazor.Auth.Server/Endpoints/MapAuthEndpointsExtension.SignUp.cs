@@ -37,7 +37,7 @@ public static partial class MapAuthEndpointsExtension
 
             var method = typeof(StaticUserService<>)
                 .MakeGenericType(payloadType)
-                .GetMethod(nameof(StaticUserService<object,object>.SignUpAsync))!;
+                .GetMethod(nameof(StaticUserService<object, object>.SignUpAsync))!;
 
             var info = await (Task<AuthenticationResultInfo>)method.Invoke(userService, [payload, cancellationToken])!;
 

@@ -1,34 +1,30 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace BitzArt.Blazor.Auth.Client;
 
 // Client-side implementation of the user service.
-internal class UserService(
-    IBlazorAuthLogger logger,
-    BlazorHostHttpClient hostClient
-    ) : IUserService
+internal class UserService(BlazorHostHttpClient hostClient) : IUserService
 {
-    private protected BlazorHostHttpClient HostClient = hostClient;
+    private protected readonly BlazorHostHttpClient HostClient = hostClient;
 
     public async Task<AuthenticationState> GetAuthenticationStateAsync(CancellationToken cancellationToken = default)
     {
-        logger.LogDebug("GetAuthenticationStateAsync was called.");
-
         var response = await HostClient.GetAsync<ClaimsPrincipalDto>("/_auth/me", cancellationToken);
 
         if (response is null) return new AuthenticationState(new ClaimsPrincipal());
 
         var principal = response.ToModel();
 
-        logger.LogDebug("GetAuthenticationStateAsync completed");
-
         return new AuthenticationState(principal);
     }
 
     public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
-        => await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/refresh", refreshToken, cancellationToken);
+    {
+        var result = await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/refresh", refreshToken, cancellationToken);
+
+        return result;
+    }
 
     public async Task SignOutAsync(CancellationToken cancellationToken = default)
     {
@@ -38,16 +34,24 @@ internal class UserService(
     }
 }
 
-internal class UserService<TSignInPayload>(IBlazorAuthLogger logger, BlazorHostHttpClient hostClient)
-    : UserService(logger, hostClient), IUserService<TSignInPayload>
+internal class UserService<TSignInPayload>(BlazorHostHttpClient hostClient)
+    : UserService(hostClient), IUserService<TSignInPayload>
 {
     public async Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default)
-        => await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/sign-in", signInPayload!, cancellationToken);
+    {
+        var result = await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/sign-in", signInPayload!, cancellationToken);
+
+        return result;
+    }
 }
 
-internal class UserService<TSignInPayload, TSignUpPayload>(IBlazorAuthLogger logger, BlazorHostHttpClient hostClient)
-    : UserService<TSignInPayload>(logger, hostClient), IUserService<TSignInPayload, TSignUpPayload>
+internal class UserService<TSignInPayload, TSignUpPayload>(BlazorHostHttpClient hostClient)
+    : UserService<TSignInPayload>(hostClient), IUserService<TSignInPayload, TSignUpPayload>
 {
     public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
-        => await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/sign-up", signUpPayload!, cancellationToken);
+    {
+        var result = await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/sign-up", signUpPayload!, cancellationToken);
+
+        return result;
+    }
 }
