@@ -10,7 +10,8 @@ internal class StaticUserService(
     IBlazorAuthLogger logger,
     IAuthenticationService authService,
     ICookieService cookieService,
-    IIdentityClaimsService claimsService
+    IIdentityClaimsService claimsService,
+    BlazorAuthServerOptions options
     ) : IUserService
 {
     private protected static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
@@ -78,13 +79,15 @@ internal class StaticUserService(
     {
         if (jwtPair is null) return;
 
+        var secure = !options.DisableSecureCookieFlag;
+
         if (!string.IsNullOrWhiteSpace(jwtPair.AccessToken))
             await cookieService.SetAsync(
                 Cookies.AccessToken,
                 jwtPair.AccessToken!,
                 jwtPair.AccessTokenExpiresAt,
                 httpOnly: true,
-                secure: true,
+                secure: secure,
                 sameSiteMode: SameSiteMode.Strict,
                 cancellationToken: cancellationToken);
 
@@ -94,7 +97,7 @@ internal class StaticUserService(
                 jwtPair.RefreshToken!,
                 jwtPair.RefreshTokenExpiresAt,
                 httpOnly: true,
-                secure: true,
+                secure: secure,
                 sameSiteMode: SameSiteMode.Strict,
                 cancellationToken: cancellationToken);
     }

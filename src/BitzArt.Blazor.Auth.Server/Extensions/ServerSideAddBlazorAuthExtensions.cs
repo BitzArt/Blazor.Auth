@@ -16,10 +16,11 @@ public static class ServerSideAddBlazorAuthExtensions
     /// using default implementations of <see cref="IAuthenticationService"/> and <see cref="IIdentityClaimsService"/>.
     /// </summary>
     /// <param name="builder">The <see cref="IHostApplicationBuilder"/> to add services to.</param>
+    /// <param name="configure">An <see cref="Action"/> to configure <see cref="BlazorAuthServerOptions"/>.</param>
     /// <returns><see cref="IHostApplicationBuilder"/> to allow chaining.</returns>
-    public static IHostApplicationBuilder AddBlazorAuth(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddBlazorAuth(this IHostApplicationBuilder builder, Action<BlazorAuthServerOptions>? configure = null)
     {
-        return builder.AddBlazorAuth<DefaultAuthenticationService, IdentityClaimsService>();
+        return builder.AddBlazorAuth<DefaultAuthenticationService, IdentityClaimsService>(configure);
     }
 
     /// <summary>
@@ -27,10 +28,10 @@ public static class ServerSideAddBlazorAuthExtensions
     /// using the default implementation of <see cref="IIdentityClaimsService"/>.
     /// </summary>
     /// <typeparam name="TAuthenticationService">The type of the server-side authentication service.</typeparam>
-    public static IHostApplicationBuilder AddBlazorAuth<TAuthenticationService>(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddBlazorAuth<TAuthenticationService>(this IHostApplicationBuilder builder, Action<BlazorAuthServerOptions>? configure = null)
         where TAuthenticationService : class, IAuthenticationService
     {
-        return builder.AddBlazorAuth<TAuthenticationService, IdentityClaimsService>();
+        return builder.AddBlazorAuth<TAuthenticationService, IdentityClaimsService>(configure);
     }
 
     /// <summary>
@@ -38,10 +39,14 @@ public static class ServerSideAddBlazorAuthExtensions
     /// </summary>
     /// <typeparam name="TAuthenticationService">The type of the server-side authentication service.</typeparam>
     /// <typeparam name="TIdentityClaimsService">The type of the identity claims service.</typeparam>
-    public static IHostApplicationBuilder AddBlazorAuth<TAuthenticationService, TIdentityClaimsService>(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddBlazorAuth<TAuthenticationService, TIdentityClaimsService>(this IHostApplicationBuilder builder, Action<BlazorAuthServerOptions>? configure = null)
         where TAuthenticationService : class, IAuthenticationService
         where TIdentityClaimsService : class, IIdentityClaimsService
     {
+        var options = new BlazorAuthServerOptions();
+        configure?.Invoke(options);
+        builder.Services.AddSingleton(options);
+
         builder.AddBlazorCookies();
         builder.Services.AddScoped<IBlazorAuthLogger, BlazorAuthLogger>();
 
