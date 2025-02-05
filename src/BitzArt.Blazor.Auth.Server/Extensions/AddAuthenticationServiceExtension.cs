@@ -49,7 +49,7 @@ internal static class AddAuthenticationServiceExtension
 
         var signUp = signature.SignUpPayloadType is null
             ? null
-            : typeof(IAuthenticationService<,>).MakeGenericType(signature.SignUpPayloadType, signature.SignUpPayloadType);
+            : typeof(IAuthenticationService<,>).MakeGenericType(signature.SignInPayloadType!, signature.SignUpPayloadType);
 
         if (signUp is null) return [basic, signIn];
 
