@@ -66,7 +66,7 @@ internal static class AddUserServiceExtension
 
         var signUp = signature.SignUpPayloadType is null
             ? null
-            : typeof(IUserService<,>).MakeGenericType(signature.SignUpPayloadType, signature.SignUpPayloadType);
+            : typeof(IUserService<,>).MakeGenericType(signature.SignInPayloadType!, signature.SignUpPayloadType);
 
         if (signUp is null) return [basic, signIn];
 
