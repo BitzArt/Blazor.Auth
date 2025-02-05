@@ -83,6 +83,11 @@ internal class InteractiveUserService(
             var actionTask = action.Invoke(module);
             return await actionTask;
         }
+        catch(Exception ex)
+        {
+            Logger.LogError(ex, AuthRequestFailedException.ErrorMessage);
+            throw new AuthRequestFailedException(ex);
+        }
         finally
         {
             await module.DisposeAsync();

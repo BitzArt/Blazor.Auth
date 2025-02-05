@@ -12,6 +12,10 @@ export async function requestAsync(url, method, body, outputType = "json") {
 
     const response = await fetch(request);
 
+    if (!response.ok) {
+        throw new Error(`Server responded with a non-success status code: '${response.status}'`);
+    }
+
     switch (outputType) {
         case "text":
             return await response.text();

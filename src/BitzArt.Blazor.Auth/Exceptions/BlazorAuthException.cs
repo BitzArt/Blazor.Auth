@@ -1,4 +1,4 @@
-﻿namespace BitzArt.Blazor.Auth.Client;
+﻿namespace BitzArt.Blazor.Auth;
 
 /// <summary>
 /// An exception thrown when something goes wrong during the authentication process.

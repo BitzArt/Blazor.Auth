@@ -11,8 +11,6 @@ internal class BlazorHostHttpClient(HttpClient httpClient, IBlazorAuthLogger log
 
     public HttpClient HttpClient => _httpClient;
 
-    private const string _errorMessage = $"Failed to parse authentication response from the host. See inner exception for details.";
-
     public async Task<TResponse> GetAsync<TResponse>(string requestUri, CancellationToken cancellationToken = default)
     {
         var response = await _httpClient.GetAsync(requestUri, cancellationToken);
@@ -51,8 +49,8 @@ internal class BlazorHostHttpClient(HttpClient httpClient, IBlazorAuthLogger log
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, _errorMessage);
-            throw new AuthRequestFailedException(_errorMessage, ex);
+            _logger.LogError(ex, AuthRequestFailedException.ErrorMessage);
+            throw new AuthRequestFailedException(ex);
         }
     }
 

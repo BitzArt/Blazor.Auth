@@ -19,8 +19,8 @@ internal class BlazorHostHttpClientMessageHandler(IBlazorAuthLogger logger)
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, _errorMessage);
-            throw new AuthRequestFailedException(_errorMessage, ex);
+            _logger.LogError(ex, AuthRequestFailedException.ErrorMessage);
+            throw new AuthRequestFailedException(ex);
         }
     }
 }
