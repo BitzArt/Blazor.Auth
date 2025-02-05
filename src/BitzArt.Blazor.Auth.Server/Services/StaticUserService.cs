@@ -125,7 +125,7 @@ internal class StaticUserService<TSignInPayload>(
     IAuthenticationService<TSignInPayload> authService,
     ICookieService cookieService,
     IIdentityClaimsService claimsService
-    ) : StaticUserService(logger, authService, cookieService, claimsService), IUserService<TSignInPayload>
+    ) : StaticUserService(logger, authService, cookieService, claimsService, new()), IUserService<TSignInPayload>
 {
     private readonly IAuthenticationService<TSignInPayload> authServiceCasted = authService;
 
