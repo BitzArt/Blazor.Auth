@@ -19,9 +19,9 @@ internal class UserService(BlazorHostHttpClient hostClient) : IUserService
         return new AuthenticationState(principal);
     }
 
-    public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<AuthenticationOperationInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
-        var result = await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/refresh", refreshToken, cancellationToken);
+        var result = await HostClient.PostAsync<AuthenticationOperationInfo>("/_auth/refresh", refreshToken, cancellationToken);
 
         return result;
     }
@@ -37,9 +37,9 @@ internal class UserService(BlazorHostHttpClient hostClient) : IUserService
 internal class UserService<TSignInPayload>(BlazorHostHttpClient hostClient)
     : UserService(hostClient), IUserService<TSignInPayload>
 {
-    public async Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default)
+    public async Task<AuthenticationOperationInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default)
     {
-        var result = await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/sign-in", signInPayload!, cancellationToken);
+        var result = await HostClient.PostAsync<AuthenticationOperationInfo>("/_auth/sign-in", signInPayload!, cancellationToken);
 
         return result;
     }
@@ -48,9 +48,9 @@ internal class UserService<TSignInPayload>(BlazorHostHttpClient hostClient)
 internal class UserService<TSignInPayload, TSignUpPayload>(BlazorHostHttpClient hostClient)
     : UserService<TSignInPayload>(hostClient), IUserService<TSignInPayload, TSignUpPayload>
 {
-    public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
+    public async Task<AuthenticationOperationInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
     {
-        var result = await HostClient.PostAsync<AuthenticationResultInfo>("/_auth/sign-up", signUpPayload!, cancellationToken);
+        var result = await HostClient.PostAsync<AuthenticationOperationInfo>("/_auth/sign-up", signUpPayload!, cancellationToken);
 
         return result;
     }

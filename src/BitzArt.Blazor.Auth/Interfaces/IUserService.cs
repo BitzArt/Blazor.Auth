@@ -16,9 +16,9 @@ public interface IUserService
     /// <summary>
     /// Refresh the current User's JWT pair.
     /// </summary>
-    /// <returns>An <see cref="AuthenticationResultInfo"/> received
+    /// <returns>An <see cref="AuthenticationOperationInfo"/> received
     /// after refreshing the User's JWT Pair and updating the Authentication State.</returns>
-    public Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default);
+    public Task<AuthenticationOperationInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Sign the current User out.
@@ -36,9 +36,9 @@ public interface IUserService<TSignInPayload> : IUserService
     /// <summary>
     /// Sign the current User in.
     /// </summary>
-    /// <returns>An <see cref="AuthenticationResultInfo"/> received
+    /// <returns>An <see cref="AuthenticationOperationInfo"/> received
     /// after signing the User in and updating the Authentication State.</returns>
-    public Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default);
+    public Task<AuthenticationOperationInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default);
 }
 
 /// <summary>
@@ -51,7 +51,7 @@ public interface IUserService<TSignInPayload, TSignUpPayload> : IUserService<TSi
     /// <summary>
     /// Sign the current User up.
     /// </summary>
-    /// <returns>An <see cref="AuthenticationResultInfo"/> received
+    /// <returns>An <see cref="AuthenticationOperationInfo"/> received
     /// after signing the User up and updating the Authentication State.</returns>
-    public Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default);
+    public Task<AuthenticationOperationInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default);
 }

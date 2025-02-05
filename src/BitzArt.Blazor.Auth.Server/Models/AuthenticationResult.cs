@@ -63,8 +63,8 @@ public class AuthenticationResult
         => new(false, jwtPair: null, errorMessage: errorMessage, data: data);
 
     /// <summary>
-    /// Provides the <see cref="AuthenticationResultInfo"/> that can be sent to the client.
+    /// Provides the <see cref="AuthenticationOperationInfo"/> that can be sent to the client.
     /// </summary>
-    /// <returns> The <see cref="AuthenticationResultInfo"/> representation of this <see cref="AuthenticationResult"/>. </returns>
-    public AuthenticationResultInfo GetInfo() => new(IsSuccess, ErrorMessage, Data);
+    /// <returns> The <see cref="AuthenticationOperationInfo"/> representation of this <see cref="AuthenticationResult"/>. </returns>
+    public AuthenticationOperationInfo GetInfo() => new(IsSuccess, ErrorMessage, Data);
 }

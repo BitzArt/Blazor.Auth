@@ -5,7 +5,7 @@ namespace BitzArt.Blazor.Auth;
 /// <summary>
 /// Contains information about the result of an authentication operation.
 /// </summary>
-public class AuthenticationResultInfo
+public class AuthenticationOperationInfo
 {
     /// <summary>
     /// Gets or sets a value indicating whether the authentication operation was successful.
@@ -26,12 +26,12 @@ public class AuthenticationResultInfo
     public IDictionary<string, object> Data { get; set; }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AuthenticationResultInfo"/> class.
+    /// Initializes a new instance of the <see cref="AuthenticationOperationInfo"/> class.
     /// </summary>
     /// <param name="isSuccess"> Indicates whether the authentication operation was successful. </param>
     /// <param name="errorMessage"> The error message, if any. </param>
     /// <param name="data"> Additional data. </param>
-    public AuthenticationResultInfo(
+    public AuthenticationOperationInfo(
         bool isSuccess = false,
         string? errorMessage = null,
         IDictionary<string, object>? data = null)
@@ -42,9 +42,9 @@ public class AuthenticationResultInfo
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AuthenticationResultInfo"/> class.
+    /// Initializes a new instance of the <see cref="AuthenticationOperationInfo"/> class.
     /// </summary>
-    public AuthenticationResultInfo()
+    public AuthenticationOperationInfo()
     {
         Data = new Dictionary<string, object>();
     }

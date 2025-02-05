@@ -34,7 +34,7 @@ internal class InteractiveUserService(
                     return new AuthenticationState(principal);
                 }));
 
-    public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<AuthenticationOperationInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
         => await DoWhileLogging(async ()
             => await DoWithJsModule(async (module)
                 =>
@@ -42,7 +42,7 @@ internal class InteractiveUserService(
                     var baseUri = GetBaseUri();
                     var url = $"{baseUri.TrimEnd('/')}/_auth/refresh";
 
-                    var result = await module.InvokeAsync<AuthenticationResultInfo>(
+                    var result = await module.InvokeAsync<AuthenticationOperationInfo>(
                         "requestAsync",
                         cancellationToken: cancellationToken,
                         [url, HttpMethod.Post.Method, refreshToken, "json"])
@@ -138,7 +138,7 @@ internal class InteractiveUserService<TSignInPayload>(
     IJSRuntime js
     ) : InteractiveUserService(logger, navigation, js), IUserService<TSignInPayload>
 {
-    public async Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default)
+    public async Task<AuthenticationOperationInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default)
         => await DoWhileLogging(async ()
             => await DoWithJsModule(async (module)
                 =>
@@ -146,7 +146,7 @@ internal class InteractiveUserService<TSignInPayload>(
                     var baseUri = GetBaseUri();
                     var url = $"{baseUri.TrimEnd('/')}/_auth/sign-in";
 
-                    var result = await module.InvokeAsync<AuthenticationResultInfo>(
+                    var result = await module.InvokeAsync<AuthenticationOperationInfo>(
                         "requestAsync",
                         cancellationToken: cancellationToken,
                         [url, HttpMethod.Post.Method, signInPayload, "json"])
@@ -161,7 +161,7 @@ internal class InteractiveUserService<TSignInPayload, TSignUpPayload>(
     NavigationManager navigation,
     IJSRuntime js) : InteractiveUserService<TSignInPayload>(logger, navigation, js), IUserService<TSignInPayload, TSignUpPayload>
 {
-    public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
+    public async Task<AuthenticationOperationInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
         => await DoWhileLogging(async ()
             => await DoWithJsModule(async (module)
                 =>
@@ -169,7 +169,7 @@ internal class InteractiveUserService<TSignInPayload, TSignUpPayload>(
                     var baseUri = GetBaseUri();
                     var url = $"{baseUri.TrimEnd('/')}/_auth/sign-up";
 
-                    var result = await module.InvokeAsync<AuthenticationResultInfo>(
+                    var result = await module.InvokeAsync<AuthenticationOperationInfo>(
                         "requestAsync",
                         cancellationToken: cancellationToken,
                         [url, HttpMethod.Post.Method, signUpPayload, "json"])

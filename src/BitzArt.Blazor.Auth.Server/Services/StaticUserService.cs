@@ -57,7 +57,7 @@ internal class StaticUserService(
         return UnauthorizedState;
     }
 
-    public async Task<AuthenticationResultInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
+    public async Task<AuthenticationOperationInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         var authResult = await authService.RefreshJwtPairAsync(refreshToken, cancellationToken)
             ?? throw new Exception("Authentication result is null.");
@@ -126,7 +126,7 @@ internal class StaticUserService<TSignInPayload>(
 {
     private readonly IAuthenticationService<TSignInPayload> authServiceCasted = authService;
 
-    public async Task<AuthenticationResultInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default)
+    public async Task<AuthenticationOperationInfo> SignInAsync(TSignInPayload signInPayload, CancellationToken cancellationToken = default)
     {
         var authResult = await authServiceCasted.SignInAsync(signInPayload, cancellationToken)
             ?? throw new Exception("Authentication result is null.");
@@ -147,7 +147,7 @@ internal class StaticUserService<TSignInPayload, TSignUpPayload>(
 {
     private readonly IAuthenticationService<TSignInPayload, TSignUpPayload> authServiceCasted = authService;
 
-    public async Task<AuthenticationResultInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
+    public async Task<AuthenticationOperationInfo> SignUpAsync(TSignUpPayload signUpPayload, CancellationToken cancellationToken = default)
     {
         var authResult = await authServiceCasted.SignUpAsync(signUpPayload, cancellationToken)
             ?? throw new Exception("Authentication result is null.");
