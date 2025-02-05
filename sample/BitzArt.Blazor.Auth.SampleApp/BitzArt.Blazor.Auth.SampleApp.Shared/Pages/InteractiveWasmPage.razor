@@ -1,0 +1,9 @@
+﻿@namespace BitzArt.Blazor.Auth.SampleApp
+@page "/interactive-wasm"
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+<PageTitle>Interactive (wasm) rendering | Blazor.Auth</PageTitle>
+
+<RendererInfoPane />
+
+<UserAuthenticationPane />

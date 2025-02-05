@@ -1,0 +1,12 @@
+﻿@namespace BitzArt.Blazor.Auth.SampleApp
+
+<Router AppAssembly="@(this.GetType().Assembly)">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)">
+            <NotAuthorized>
+                <Redirect To="/" />
+            </NotAuthorized>
+        </AuthorizeRouteView>
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+</Router>

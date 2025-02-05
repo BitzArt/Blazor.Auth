@@ -1,0 +1,9 @@
+﻿@namespace BitzArt.Blazor.Auth.SampleApp
+@page "/interactive-server"
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<PageTitle>Interactive (server) rendering | Blazor.Auth</PageTitle>
+
+<RendererInfoPane />
+
+<UserAuthenticationPane />

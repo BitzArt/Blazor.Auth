@@ -1,4 +1,5 @@
 using BitzArt.Blazor.Auth.SampleApp.Services;
+using BitzArt.Blazor.Auth.Server;
 
 namespace BitzArt.Blazor.Auth.SampleApp;
 
@@ -14,7 +15,7 @@ internal class Program
             .AddInteractiveWebAssemblyComponents();
 
         builder.Services.AddScoped<JwtService>();
-        builder.AddBlazorAuth<SampleServerSideAuthenticationService>();
+        builder.AddBlazorAuth<SampleAuthenticationService>();
 
         var app = builder.Build();
 
@@ -28,7 +29,7 @@ internal class Program
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode()
             .AddInteractiveWebAssemblyRenderMode()
-            .AddAdditionalAssemblies(typeof(Client._Imports).Assembly);
+            .AddAdditionalAssemblies(typeof(Shared._Imports).Assembly);
 
         app.MapAuthEndpoints();
 

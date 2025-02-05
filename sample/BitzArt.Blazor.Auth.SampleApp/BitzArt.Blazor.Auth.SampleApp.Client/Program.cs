@@ -1,3 +1,4 @@
+using BitzArt.Blazor.Auth.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace BitzArt.Blazor.Auth.SampleApp.Client;

@@ -1,0 +1,84 @@
+﻿@namespace BitzArt.Blazor.Auth.SampleApp
+
+<AuthorizeView>
+
+    <NotAuthorized>
+        <div>
+            <h4>
+                You are not authenticated.
+            </h4>
+
+            @if(IsInteractive)
+            {
+                <div style="margin-top:2rem;">
+                    <button type="submit" class="btn btn-lg btn-primary" @onclick="SignInAsync">Sign In</button>
+                </div>
+            }
+            else
+            {
+                <form method="post" @onsubmit="SignInAsync" @formname="sign-in-form">
+                    <AntiforgeryToken />
+                    <div style="margin-top:2rem;">
+                        <button type="submit" class="btn btn-lg btn-primary">Sign In</button>
+                    </div>
+                </form>
+            }
+        </div>
+    </NotAuthorized>
+
+    <Authorized>
+        <div>
+            <h4>
+                You are authenticated.
+            </h4>
+
+            @if (IsInteractive)
+            {
+                <div style="margin-top:2rem;">
+                    <button type="submit" class="btn btn-lg btn-primary" @onclick="SignOutAsync">Sign Out</button>
+                </div>
+            }
+            else
+            {
+                <form method="post" @onsubmit="SignOutAsync" @formname="sign-out-form">
+                    <AntiforgeryToken />
+                    <div style="margin-top:2rem;">
+                        <button type="submit" class="btn btn-lg btn-primary">Sign Out</button>
+                    </div>
+                </form>
+            }
+        </div>
+    </Authorized>
+
+</AuthorizeView>
+
+@code
+{
+    [Inject] NavigationManager NavigationManager { get; set; } = null!;
+    [Inject] IUserService<SignInPayload> UserService { get; set; } = null!;
+
+    private bool IsInteractive => RendererInfo.IsInteractive;
+
+    private async Task SignInAsync()
+    {
+        // Simulating user input
+        var signInPayload = new SignInPayload("some data");
+
+        // Signing the user in
+        var authenticationResult = await UserService.SignInAsync(signInPayload);
+
+        // Refresh the page after signing in
+        // to let Blazor know that the user's authentication state has changed
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+    }
+
+    private async Task SignOutAsync()
+    {
+        // Signing the user out
+        await UserService.SignOutAsync();
+
+        // Refresh the page after signing out
+        // to let Blazor know that the user's authentication state has changed
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+    }
+}

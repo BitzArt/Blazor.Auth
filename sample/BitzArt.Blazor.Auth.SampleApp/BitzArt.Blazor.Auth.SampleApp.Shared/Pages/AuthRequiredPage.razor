@@ -1,0 +1,9 @@
+﻿@namespace BitzArt.Blazor.Auth.SampleApp
+@page "/auth-required"
+
+@* This attribute makes the page require authorization. Also check `Routes.razor` *@
+@attribute [Authorize]
+
+<PageTitle>Auth Required Page | Blazor.Auth</PageTitle>
+
+You are authorized to see this page!
