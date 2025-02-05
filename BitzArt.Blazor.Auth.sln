@@ -33,6 +33,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sln", "sln", "{5A14673C-C4B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitzArt.Blazor.Auth.SampleApp.Shared", "sample\BitzArt.Blazor.Auth.SampleApp\BitzArt.Blazor.Auth.SampleApp.Shared\BitzArt.Blazor.Auth.SampleApp.Shared.csproj", "{97E5AAD7-26BD-4340-AEB8-9224289CFED1}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{35C2C42E-666E-4FB0-BC6E-0F65C9DEDB1D}"
+	ProjectSection(SolutionItems) = preProject
+		docs\book.toml = docs\book.toml
+		docs\mermaid-init-new.js = docs\mermaid-init-new.js
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7F32C88E-3917-4E8A-9468-74EF8CC03E07}"
+	ProjectSection(SolutionItems) = preProject
+		docs\src\01.introduction.md = docs\src\01.introduction.md
+		docs\src\02.getting-started.md = docs\src\02.getting-started.md
+		docs\src\03.authentication.md = docs\src\03.authentication.md
+		docs\src\04.use-cases.md = docs\src\04.use-cases.md
+		docs\src\SUMMARY.md = docs\src\SUMMARY.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04.use-cases", "04.use-cases", "{6A08059D-DAAA-4BAC-B37C-F662AEB60C5E}"
+	ProjectSection(SolutionItems) = preProject
+		docs\src\04.use-cases\01.static-ssr.md = docs\src\04.use-cases\01.static-ssr.md
+		docs\src\04.use-cases\02.interactive-webassembly.md = docs\src\04.use-cases\02.interactive-webassembly.md
+		docs\src\04.use-cases\03.interactive-server.md = docs\src\04.use-cases\03.interactive-server.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +97,8 @@ Global
 		{BA3BE36B-6418-4943-916E-24B993B3AABC} = {F0AC2847-ADDF-4D66-B1FA-2D6B34F206CF}
 		{D0C5E24D-EB0A-412D-9BF3-6F531D079B82} = {BCC58C74-2E49-4CAD-84B3-75AD9E14A005}
 		{97E5AAD7-26BD-4340-AEB8-9224289CFED1} = {2E5D89F5-108F-4E1D-B9D7-D86A531130CE}
+		{7F32C88E-3917-4E8A-9468-74EF8CC03E07} = {35C2C42E-666E-4FB0-BC6E-0F65C9DEDB1D}
+		{6A08059D-DAAA-4BAC-B37C-F662AEB60C5E} = {7F32C88E-3917-4E8A-9468-74EF8CC03E07}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43738754-874B-41F7-8B6C-087023E2CD94}
