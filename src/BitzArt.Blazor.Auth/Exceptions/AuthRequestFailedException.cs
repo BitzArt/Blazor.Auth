@@ -7,7 +7,7 @@
 /// Initializes a new instance of the <see cref="BlazorAuthException"/> class.
 /// </remarks>
 /// <param name="innerException">The exception that is the cause of the current exception.</param>
-public class AuthRequestFailedException(Exception? innerException) : BlazorAuthException(ErrorMessage, innerException)
+public class AuthRequestFailedException(Exception innerException) : BlazorAuthException(ErrorMessage, innerException)
 {
-    internal const string ErrorMessage = $"Failed to parse authentication response from the host. See inner exception for details.";
+    internal const string ErrorMessage = "An error occurred while sending authentication request to the host. See inner exception for details.";
 }
