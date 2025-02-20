@@ -36,7 +36,7 @@ public static partial class MapAuthEndpointsExtension
             if (payload is null) return Results.BadRequest("Invalid Sign-In payload.");
 
             var method = typeof(StaticUserService<>)
-                .MakeGenericType(payloadType)
+                .MakeGenericType(authServiceSignature.SignInPayloadType!, payloadType)
                 .GetMethod(nameof(StaticUserService<object, object>.SignUpAsync))!;
 
             var info = await (Task<AuthenticationOperationInfo>)method.Invoke(userService, [payload, cancellationToken])!;
