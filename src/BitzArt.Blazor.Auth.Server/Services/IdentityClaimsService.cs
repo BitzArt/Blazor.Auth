@@ -4,7 +4,7 @@ using System.Security.Claims;
 namespace BitzArt.Blazor.Auth.Server;
 
 /// <inheritdoc cref="IIdentityClaimsService"/>
-public class IdentityClaimsService() : IIdentityClaimsService
+public class IdentityClaimsService : IIdentityClaimsService
 {
     private readonly JwtSecurityTokenHandler _tokenHandler = new();
 
