@@ -124,8 +124,9 @@ internal class StaticUserService<TSignInPayload>(
     IBlazorAuthLogger logger,
     IAuthenticationService<TSignInPayload> authService,
     ICookieService cookieService,
-    IIdentityClaimsService claimsService
-    ) : StaticUserService(logger, authService, cookieService, claimsService, new()), IUserService<TSignInPayload>
+    IIdentityClaimsService claimsService,
+    BlazorAuthServerOptions options
+    ) : StaticUserService(logger, authService, cookieService, claimsService, options), IUserService<TSignInPayload>
 {
     private readonly IAuthenticationService<TSignInPayload> authServiceCasted = authService;
 
@@ -145,8 +146,9 @@ internal class StaticUserService<TSignInPayload, TSignUpPayload>(
     IBlazorAuthLogger logger,
     IAuthenticationService<TSignInPayload, TSignUpPayload> authService,
     ICookieService cookieService,
-    IIdentityClaimsService claimsService
-    ) : StaticUserService<TSignInPayload>(logger, authService, cookieService, claimsService), IUserService<TSignInPayload, TSignUpPayload>
+    IIdentityClaimsService claimsService,
+    BlazorAuthServerOptions options
+    ) : StaticUserService<TSignInPayload>(logger, authService, cookieService, claimsService, options), IUserService<TSignInPayload, TSignUpPayload>
 {
     private readonly IAuthenticationService<TSignInPayload, TSignUpPayload> authServiceCasted = authService;
 
