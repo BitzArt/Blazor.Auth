@@ -33,7 +33,7 @@ public static partial class MapAuthEndpointsExtension
             var bodyAsString = await reader.ReadToEndAsync(cancellationToken);
             var payload = JsonSerializer.Deserialize(bodyAsString, payloadType, Constants.JsonSerializerOptions);
 
-            if (payload is null) return Results.BadRequest("Invalid Sign-In payload.");
+            if (payload is null) return Results.BadRequest("Invalid Sign-Up payload.");
 
             var method = typeof(StaticUserService<,>)
                 .MakeGenericType(authServiceSignature.SignInPayloadType!, payloadType)
