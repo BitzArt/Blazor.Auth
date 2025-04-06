@@ -5,6 +5,7 @@
 - [Introduction](01.introduction.md)
 - [Getting Started](02.getting-started.md)
 - [Authentication](03.authentication.md)
+    - [Sign Up](03.authentication/01.sign-up.md)
 - [Use Cases](04.use-cases.md)
     - [Static SSR](04.use-cases/01.static-ssr.md)
     - [Interactive WebAssembly](04.use-cases/02.interactive-webassembly.md)
