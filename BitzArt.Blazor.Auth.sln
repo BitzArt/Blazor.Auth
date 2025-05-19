@@ -55,6 +55,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04.use-cases", "04.use-case
 		docs\src\04.use-cases\03.interactive-server.md = docs\src\04.use-cases\03.interactive-server.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BitzArt.Blazor.Auth.Tests", "tests\BitzArt.Blazor.Auth.Tests\BitzArt.Blazor.Auth.Tests.csproj", "{3BA9FBEA-AC3D-49D3-8139-1D1BFE910AAD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +89,10 @@ Global
 		{97E5AAD7-26BD-4340-AEB8-9224289CFED1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97E5AAD7-26BD-4340-AEB8-9224289CFED1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97E5AAD7-26BD-4340-AEB8-9224289CFED1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BA9FBEA-AC3D-49D3-8139-1D1BFE910AAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BA9FBEA-AC3D-49D3-8139-1D1BFE910AAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BA9FBEA-AC3D-49D3-8139-1D1BFE910AAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BA9FBEA-AC3D-49D3-8139-1D1BFE910AAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +107,7 @@ Global
 		{97E5AAD7-26BD-4340-AEB8-9224289CFED1} = {2E5D89F5-108F-4E1D-B9D7-D86A531130CE}
 		{7F32C88E-3917-4E8A-9468-74EF8CC03E07} = {35C2C42E-666E-4FB0-BC6E-0F65C9DEDB1D}
 		{6A08059D-DAAA-4BAC-B37C-F662AEB60C5E} = {7F32C88E-3917-4E8A-9468-74EF8CC03E07}
+		{3BA9FBEA-AC3D-49D3-8139-1D1BFE910AAD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {43738754-874B-41F7-8B6C-087023E2CD94}
