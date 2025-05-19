@@ -16,29 +16,32 @@ internal class StaticUserService(
 {
     private protected static AuthenticationState UnauthorizedState => new(new ClaimsPrincipal());
 
+    private Cookie? _accessTokenCookie;
+    private Cookie? _refreshTokenCookie;
+
     public async Task<AuthenticationState> GetAuthenticationStateAsync(CancellationToken cancellationToken = default)
     {
         var cookies = (await cookieService.GetAllAsync())
             .ToDictionary(x => x.Key);
 
-        var accessTokenFound = cookies.TryGetValue(Cookies.AccessToken, out var accessTokenCookie);
+        var accessTokenFound = _accessTokenCookie is not null || cookies.TryGetValue(Cookies.AccessToken, out _accessTokenCookie);
 
-        if (accessTokenFound && !string.IsNullOrWhiteSpace(accessTokenCookie!.Value))
+        if (accessTokenFound && !string.IsNullOrWhiteSpace(_accessTokenCookie!.Value))
         {
             logger.LogDebug("Access token was found in request cookies.");
-            var principal = await claimsService.BuildClaimsPrincipalAsync(accessTokenCookie!.Value);
+            var principal = await claimsService.BuildClaimsPrincipalAsync(_accessTokenCookie!.Value);
             return new AuthenticationState(principal);
         }
 
         logger.LogDebug("Access token was not found in request cookies.");
 
-        var refreshTokenFound = cookies.TryGetValue(Cookies.RefreshToken, out var refreshTokenCookie);
+        var refreshTokenFound = _refreshTokenCookie is not null || cookies.TryGetValue(Cookies.RefreshToken, out _refreshTokenCookie);
 
-        if (refreshTokenFound && !string.IsNullOrWhiteSpace(refreshTokenCookie!.Value))
+        if (refreshTokenFound && !string.IsNullOrWhiteSpace(_refreshTokenCookie!.Value))
         {
             logger.LogDebug("Refresh token was found in cookies. Refreshing the user's JWT pair...");
 
-            var refreshResult = await authService.RefreshJwtPairAsync(refreshTokenCookie!.Value, cancellationToken);
+            var refreshResult = await authService.RefreshJwtPairAsync(_refreshTokenCookie!.Value, cancellationToken);
 
             if (!refreshResult.IsSuccess)
             {
@@ -82,24 +85,31 @@ internal class StaticUserService(
         var secure = !options.DisableSecureCookieFlag;
 
         if (!string.IsNullOrWhiteSpace(jwtPair.AccessToken))
-            await cookieService.SetAsync(
+        {
+            _accessTokenCookie = new(
                 Cookies.AccessToken,
                 jwtPair.AccessToken!,
                 jwtPair.AccessTokenExpiresAt,
-                httpOnly: true,
-                secure: secure,
-                sameSiteMode: SameSiteMode.Strict,
-                cancellationToken: cancellationToken);
+                HttpOnly: true,
+                Secure: secure,
+                SameSiteMode: SameSiteMode.Strict);
+
+            await cookieService.SetAsync(_accessTokenCookie, cancellationToken: cancellationToken);
+        }
+            
 
         if (!string.IsNullOrWhiteSpace(jwtPair.RefreshToken))
-            await cookieService.SetAsync(
+        {
+            _refreshTokenCookie = new(
                 Cookies.RefreshToken,
                 jwtPair.RefreshToken!,
                 jwtPair.RefreshTokenExpiresAt,
-                httpOnly: true,
-                secure: secure,
-                sameSiteMode: SameSiteMode.Strict,
-                cancellationToken: cancellationToken);
+                HttpOnly: true,
+                Secure: secure,
+                SameSiteMode: SameSiteMode.Strict);
+
+            await cookieService.SetAsync(_refreshTokenCookie, cancellationToken: cancellationToken);
+        }
     }
 
     internal static UserServiceRegistrationInfo GetServiceRegistrationInfo(AuthenticationServiceSignature signature)
