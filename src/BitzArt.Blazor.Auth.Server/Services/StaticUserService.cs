@@ -90,9 +90,9 @@ internal class StaticUserService(
                 Cookies.AccessToken,
                 jwtPair.AccessToken!,
                 jwtPair.AccessTokenExpiresAt,
-                HttpOnly: true,
-                Secure: secure,
-                SameSiteMode: SameSiteMode.Strict);
+                httpOnly: true,
+                secure: secure,
+                sameSiteMode: SameSiteMode.Strict);
 
             await cookieService.SetAsync(_accessTokenCookie, cancellationToken: cancellationToken);
         }
@@ -104,9 +104,9 @@ internal class StaticUserService(
                 Cookies.RefreshToken,
                 jwtPair.RefreshToken!,
                 jwtPair.RefreshTokenExpiresAt,
-                HttpOnly: true,
-                Secure: secure,
-                SameSiteMode: SameSiteMode.Strict);
+                httpOnly: true,
+                secure: secure,
+                sameSiteMode: SameSiteMode.Strict);
 
             await cookieService.SetAsync(_refreshTokenCookie, cancellationToken: cancellationToken);
         }
