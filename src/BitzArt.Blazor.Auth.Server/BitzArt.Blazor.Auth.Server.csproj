@@ -29,7 +29,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BitzArt.Blazor.Cookies.Server" Version="1.2.0" />
+		<PackageReference Include="BitzArt.Blazor.Cookies.Server" Version="1.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>
