@@ -5,7 +5,7 @@
 
 ## Overview
 
-**Blazor.Auth** is a developer-friendly JWT & Cookie authentication library for Blazor (Server, WASM, United, SSR, Auto). Built for .NET 8+ and designed to make Blazor authentication less painful, more secure, and (dare we say) enjoyable.
+**Blazor.Auth** is a developer-friendly JWT & Cookie authentication library for Blazor. Built for .NET 8+ and designed to make Blazor authentication less painful, more secure, and (dare we say) enjoyable.
 
 > 🍪
 > The package uses [Blazor.Cookies](https://github.com/BitzArt/Blazor.Cookies) for persisting user authentication state via browser cookies.
@@ -14,10 +14,9 @@ This package is for developers who want to:
 
 - Add JWT authentication to Blazor apps (Server, WebAssembly, United)
 - Use secure cookie authentication in .NET 8+ Blazor projects
+- Implement authentication & authorization in public-facing Blazor sites, SaaS dashboards, or internal enterprise Blazor apps
 - Implement custom login, logout, and token refresh flows
 - Leverage Blazor's built-in authorization capabilities (such as `[AuthorizeView]` and `[CascadingAuthenticationState]`)
-- Persist authentication state in browser cookies (no localStorage/sessionStorage)
-- Use in public-facing Blazor sites, SaaS dashboards, or internal enterprise Blazor apps
 
 ### Why Blazor.Auth?
 
