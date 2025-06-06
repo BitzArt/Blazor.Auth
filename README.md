@@ -43,7 +43,7 @@ dotnet add package BitzArt.Blazor.Auth.Client
 
 ## Resources
 
-Find guides, API docs, and real-world Blazor authentication examples in the [documentation](https://bitzart.github.io/Blazor.Auth).
+Find guides, API docs, and examples in the [documentation](https://bitzart.github.io/Blazor.Auth).
 
 [![documentation](https://img.shields.io/badge/documentation-512BD4?style=for-the-badge)](https://bitzart.github.io/Blazor.Auth)
 
