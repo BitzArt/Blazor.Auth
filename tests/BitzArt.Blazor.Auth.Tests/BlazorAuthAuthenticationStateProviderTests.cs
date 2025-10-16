@@ -17,6 +17,9 @@ public class BlazorAuthAuthenticationStateProviderTests
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity([claim])));
         }
 
+        public Task<AuthenticationOperationInfo> RefreshJwtPairAsync(CancellationToken cancellationToken = default)
+            => throw new NotImplementedException();
+
         public Task<AuthenticationOperationInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
             => throw new NotImplementedException();
 
@@ -28,7 +31,7 @@ public class BlazorAuthAuthenticationStateProviderTests
     public async Task GetAuthenticationStateAsync_Simaltaneous_ShouldReuseTheSameRequest()
     {
         // Arrange
-        var provider = new BlazorAuthAuthenticationStateProvider(new TestUserService());
+        var provider = new BlazorAuthAuthenticationStateProvider(new TestUserService(), new());
 
         // Act
         var primaryTask = provider.GetAuthenticationStateAsync();
