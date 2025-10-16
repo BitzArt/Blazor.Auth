@@ -46,10 +46,14 @@ internal class BlazorAuthAuthenticationStateProvider : AuthenticationStateProvid
 
     private async Task<AuthenticationState> ResolveStateAsync(Action? onComplete = null)
     {
-        var result = await _userService.GetAuthenticationStateAsync();
-
-        onComplete?.Invoke();
-
-        return result;
+        try
+        {
+            var result = await _userService.GetAuthenticationStateAsync();
+            return result;
+        }
+        finally
+        {
+            onComplete?.Invoke();
+        }
     }
 }
