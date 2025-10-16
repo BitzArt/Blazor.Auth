@@ -23,8 +23,7 @@ public static partial class MapAuthEndpointsExtension
                 if (payloadType is null)
                     return Results.BadRequest("The registered IAuthenticationService does not implement Sign-In functionality.");
 
-                var userService = serviceProvider.GetRequiredService<StaticUserService>()
-                    ?? throw new UnreachableException();
+                var userService = serviceProvider.GetRequiredService<StaticUserService>();
 
                 var context = httpContextAccessor.HttpContext
                     ?? throw new InvalidOperationException("The HttpContext is not available.");

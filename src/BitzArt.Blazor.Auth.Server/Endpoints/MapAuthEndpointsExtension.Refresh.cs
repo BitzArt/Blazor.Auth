@@ -17,8 +17,7 @@ public static partial class MapAuthEndpointsExtension
             [FromServices] IHttpContextAccessor httpContextAccessor,
             CancellationToken cancellationToken = default) =>
         {
-            var userService = serviceProvider.GetRequiredService<StaticUserService>()
-                    ?? throw new UnreachableException();
+            var userService = serviceProvider.GetRequiredService<StaticUserService>();
 
             var context = httpContextAccessor.HttpContext
                     ?? throw new InvalidOperationException("The HttpContext is not available.");
