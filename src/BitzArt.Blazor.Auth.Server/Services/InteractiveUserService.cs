@@ -180,6 +180,8 @@ internal class InteractiveUserService<TSignInPayload>(
                         [url, HttpMethod.Post.Method, signInPayload, "json"])
                         ?? throw new InvalidOperationException("Failed to deserialize the authentication result info.");
 
+                    NotifyAuthenticationStateUpdated(result);
+
                     return result;
                 }));
 }
@@ -202,6 +204,8 @@ internal class InteractiveUserService<TSignInPayload, TSignUpPayload>(
                         cancellationToken: cancellationToken,
                         [url, HttpMethod.Post.Method, signUpPayload, "json"])
                         ?? throw new InvalidOperationException("Failed to deserialize the authentication result info.");
+
+                    NotifyAuthenticationStateUpdated(result);
 
                     return result;
                 }));
