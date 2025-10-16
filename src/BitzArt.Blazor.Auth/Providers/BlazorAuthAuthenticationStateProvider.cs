@@ -7,50 +7,45 @@ internal class BlazorAuthAuthenticationStateProvider : AuthenticationStateProvid
 {
     private readonly IUserService _userService;
 
-    private readonly SemaphoreSlim _semaphore;
-    private Task<AuthenticationState>? _authenticationStateTask;
+#if NET8_0
+    private readonly static object _lock = new();
+#elif NET9_0_OR_GREATER
+    private readonly static Lock _lock = new();
+#endif
 
     public BlazorAuthAuthenticationStateProvider(IUserService userService)
     {
         _userService = userService;
-
-        _semaphore = new(1);
     }
 
+    private Task<AuthenticationState>? _currentTask;
+
     /// <inheritdoc/>
-    public override async Task<AuthenticationState> GetAuthenticationStateAsync()
+    public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        bool isPrimary = false;
-        Task<AuthenticationState>? task = null;
-
-        await _semaphore.WaitAsync();
-
-        try
+        lock (_lock)
         {
-            if (_authenticationStateTask is null)
+            if (_currentTask is not null)
             {
-                isPrimary = true;
-                task = _userService.GetAuthenticationStateAsync();
-                _authenticationStateTask = task;
+                return _currentTask;
             }
-            else
+
+            _currentTask = ResolveStateAsync(() =>
             {
-                task = _authenticationStateTask;
-            } 
-        }
-        finally
-        {
-            _semaphore.Release();
+                _currentTask = null;
+            });
         }
 
-        if (isPrimary)
-        {
-            NotifyAuthenticationStateChanged(_authenticationStateTask);
-            var result = await task;
-            _authenticationStateTask = null;
-            return result;
-        }
+        NotifyAuthenticationStateChanged(_currentTask);
+        return _currentTask;
+    }
 
-        return await task!;
+    private async Task<AuthenticationState> ResolveStateAsync(Action? onComplete = null)
+    {
+        var result = await _userService.GetAuthenticationStateAsync();
+
+        onComplete?.Invoke();
+
+        return result;
     }
 }
