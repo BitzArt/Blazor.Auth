@@ -32,11 +32,15 @@ internal class BlazorAuthAuthenticationStateProvider : AuthenticationStateProvid
 
             _currentTask = ResolveStateAsync(() =>
             {
-                _currentTask = null;
+                lock (_lock)
+                {
+                    _currentTask = null;
+                }
             });
+
+            NotifyAuthenticationStateChanged(_currentTask);
         }
 
-        NotifyAuthenticationStateChanged(_currentTask);
         return _currentTask;
     }
 
