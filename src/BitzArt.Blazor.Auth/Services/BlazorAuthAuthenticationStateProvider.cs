@@ -93,7 +93,13 @@ internal class BlazorAuthAuthenticationStateProvider : AuthenticationStateProvid
             return;
         }
 
-        var accessExpirationDateTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expirationClaim.Value));
+        if (!long.TryParse(expirationClaim.Value, out var expSeconds))
+        {
+            // expiration claim value is not a valid number, cannot set an expiration timer
+            return;
+        }
+
+        var accessExpirationDateTime = DateTimeOffset.FromUnixTimeSeconds(expSeconds);
 
         // calculate the time until the access token expires
         var timeToExpire = accessExpirationDateTime - DateTimeOffset.UtcNow;
@@ -102,14 +108,14 @@ internal class BlazorAuthAuthenticationStateProvider : AuthenticationStateProvid
         {
             // the token has already expired, refresh the state immediately
             // (however this shouldn't normally be happening)
-            _ = _userService.RefreshJwtPairAsync();
+            _ = Task.Run(() => _userService.RefreshJwtPairAsync());
             return;
         }
 
         _expirationTimer?.Dispose();
 
         // set a timer to refresh the user's JWT pair when access token expires
-        _expirationTimer = new(_ => _userService.RefreshJwtPairAsync(), null, timeToExpire, TimeSpan.Zero);
+        _expirationTimer = new(_ => Task.Run(() => _userService.RefreshJwtPairAsync()), null, timeToExpire, TimeSpan.Zero);
     }
 
     // dispose of the refresh timer on component disposal (page close)
