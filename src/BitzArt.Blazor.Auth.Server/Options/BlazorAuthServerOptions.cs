@@ -3,7 +3,7 @@
 /// <summary>
 /// Options for the Blazor Auth Server.
 /// </summary>
-public class BlazorAuthServerOptions
+public class BlazorAuthServerOptions : BlazorAuthOptions
 {
     /// <summary>
     /// Allows the app to operate in a non-HTTPS environment.

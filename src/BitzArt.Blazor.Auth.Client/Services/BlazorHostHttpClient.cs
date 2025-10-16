@@ -25,6 +25,14 @@ internal class BlazorHostHttpClient(HttpClient httpClient, IBlazorAuthLogger log
         return result;
     }
 
+    public async Task<TResponse> PostAsync<TResponse>(string requestUri, CancellationToken cancellationToken = default)
+    {
+        var response = await _httpClient.PostAsync(requestUri, null, cancellationToken);
+        var result = await ParseResponseAsync<TResponse>(response, cancellationToken);
+
+        return result;
+    }
+
     public async Task<HttpResponseMessage> GetAsync(string requestUri, CancellationToken cancellationToken = default)
         => await _httpClient.PostAsync(requestUri, null, cancellationToken);
 

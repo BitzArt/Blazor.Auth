@@ -1,0 +1,124 @@
+﻿using Microsoft.AspNetCore.Components.Authorization;
+
+namespace BitzArt.Blazor.Auth;
+
+/// <inheritdoc/>
+internal class BlazorAuthAuthenticationStateProvider : AuthenticationStateProvider, IDisposable
+{
+    private readonly IUserService _userService;
+    private readonly BlazorAuthOptions _options;
+
+#if NET8_0
+    private readonly static object _lock = new();
+#elif NET9_0_OR_GREATER
+    private readonly static Lock _lock = new();
+#endif
+
+    public BlazorAuthAuthenticationStateProvider(IUserService userService, BlazorAuthOptions options)
+    {
+        _userService = userService;
+
+        if (userService is IAuthStateUpdateNotifier notifier)
+        {
+            notifier.AuthenticationStateUpdated += (sender, info) =>
+            {
+                _ = GetAuthenticationStateAsync();
+            };
+        }
+
+        _options = options;
+    }
+
+    private Task<AuthenticationState>? _currentTask;
+    private Timer? _expirationTimer;
+
+    /// <inheritdoc/>
+    public override Task<AuthenticationState> GetAuthenticationStateAsync()
+    {
+        lock (_lock)
+        {
+            if (_currentTask is not null)
+            {
+                return _currentTask;
+            }
+
+            _currentTask = ResolveStateAsync((authState) =>
+            {
+                lock (_lock)
+                {
+                    _currentTask = null;
+
+                    if (!_options.DisableAutoExpirationHandling)
+                    {
+                        TrySetExpirationTimer(authState);
+                    }
+                }
+            });
+
+            NotifyAuthenticationStateChanged(_currentTask);
+        }
+
+        return _currentTask;
+    }
+
+    private async Task<AuthenticationState> ResolveStateAsync(Action<AuthenticationState?>? onComplete = null)
+    {
+        AuthenticationState? result = null;
+        try
+        {
+            result = await _userService.GetAuthenticationStateAsync();
+            return result;
+        }
+        finally
+        {
+            onComplete?.Invoke(result);
+        }
+    }
+
+    private void TrySetExpirationTimer(AuthenticationState? authState)
+    {
+        // Unauthenticated user, no need to set an expiration timer
+        if (authState?.User.Identity?.IsAuthenticated != true)
+        {
+            return;
+        }
+
+        // Find access token expiration time, if available
+        var expirationClaim = authState.User.Claims.FirstOrDefault(c => c.Type == "exp");
+
+        if (expirationClaim is null || string.IsNullOrWhiteSpace(expirationClaim.Value))
+        {
+            // no expiration claim found, cannot set an expiration timer
+            return;
+        }
+
+        // +2 seconds:
+        // 1 second for the second in question to tick over (unix timestamp precision)
+        // and 1 extra second as a buffer for the token to definitely be considered expired
+        var accessExpirationDateTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expirationClaim.Value) + 2);
+
+        // calculate the time until the access token expires
+        var timeToExpire = accessExpirationDateTime - DateTimeOffset.UtcNow;
+
+        if (timeToExpire <= TimeSpan.Zero)
+        {
+            // the token has already expired, refresh the state immediately
+            // (however this shouldn't normally be happening)
+            _ = _userService.RefreshJwtPairAsync();
+            return;
+        }
+
+        // dispose of the previous timer if it exists
+        // (although it normally shouldn't exist at this moment)
+        _expirationTimer?.Dispose();
+
+        // set a timer to refresh the user's JWT pair when access token expires
+        _expirationTimer = new Timer(_ => _userService.RefreshJwtPairAsync(), null, timeToExpire, TimeSpan.Zero);
+    }
+
+    // dispose of the refresh timer on component disposal (page close)
+    public void Dispose()
+    {
+        _expirationTimer?.Dispose();
+    }
+}

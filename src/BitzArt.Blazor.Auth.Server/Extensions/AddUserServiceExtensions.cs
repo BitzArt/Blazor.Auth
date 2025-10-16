@@ -2,7 +2,7 @@
 
 namespace BitzArt.Blazor.Auth.Server;
 
-internal static class AddUserServiceExtension
+internal static class AddUserServiceExtensions
 {
     public static IServiceCollection AddUserService(this IServiceCollection services, AuthenticationServiceSignature authServiceSignature)
     {

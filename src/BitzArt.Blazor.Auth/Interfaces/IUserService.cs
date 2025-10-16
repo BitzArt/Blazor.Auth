@@ -18,6 +18,14 @@ public interface IUserService
     /// </summary>
     /// <returns>An <see cref="AuthenticationOperationInfo"/> received
     /// after refreshing the User's JWT Pair and updating the Authentication State.</returns>
+    public Task<AuthenticationOperationInfo> RefreshJwtPairAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Refresh the current User's JWT pair.
+    /// </summary>
+    /// <returns>An <see cref="AuthenticationOperationInfo"/> received
+    /// after refreshing the User's JWT Pair and updating the Authentication State.</returns>
+    [Obsolete("Use RefreshJwtPairAsync overload without refreshToken parameter instead.")]
     public Task<AuthenticationOperationInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default);
 
     /// <summary>
