@@ -61,6 +61,20 @@ internal class StaticUserService(
         return UnauthorizedState;
     }
 
+    public async Task<AuthenticationOperationInfo> RefreshJwtPairAsync(CancellationToken cancellationToken = default)
+    {
+        var refreshTokenCookie = await cookieService.GetAsync(Cookies.RefreshToken);
+
+        if (refreshTokenCookie is null || string.IsNullOrWhiteSpace(refreshTokenCookie!.Value))
+        {
+            return new AuthenticationOperationInfo(false, "Refresh token was not found in cookies.");
+        }
+
+        logger.LogDebug("Refresh token was found in cookies. Refreshing the user's JWT pair...");
+
+        return await RefreshJwtPairAsync(refreshTokenCookie!.Value!, cancellationToken);
+    }
+
     public async Task<AuthenticationOperationInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
         var authResult = await authService.RefreshJwtPairAsync(refreshToken, cancellationToken)

@@ -14,9 +14,16 @@ public static class ClientSideAddBlazorAuthExtension
     /// Adds client-side Blazor.Auth services to the specified <see cref="WebAssemblyHostBuilder"/>.
     /// </summary>
     /// <param name="builder">The <see cref="WebAssemblyHostBuilder"/> to add services to.</param>
+    /// <param name="configure">An <see cref="Action"/> to configure <see cref="BlazorAuthOptions"/>.</param>
     /// <returns><see cref="WebAssemblyHostBuilder"/> to allow chaining.</returns>
-    public static WebAssemblyHostBuilder AddBlazorAuth(this WebAssemblyHostBuilder builder)
+    public static WebAssemblyHostBuilder AddBlazorAuth(this WebAssemblyHostBuilder builder, Action<BlazorAuthOptions>? configure = null)
     {
+        var options = new BlazorAuthOptions();
+
+        configure?.Invoke(options);
+
+        builder.Services.AddSingleton(options);
+
         builder.AddBlazorCookies();
         builder.Services.AddScoped<IBlazorAuthLogger, BlazorAuthLogger>();
 

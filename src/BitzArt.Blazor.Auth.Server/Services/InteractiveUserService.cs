@@ -10,11 +10,16 @@ namespace BitzArt.Blazor.Auth.Server;
 internal class InteractiveUserService(
     IBlazorAuthLogger logger,
     NavigationManager navigation,
-    IJSRuntime js) : IUserService
+    IJSRuntime js) : IUserService, IAuthStateUpdateNotifier
 {
     private protected readonly IBlazorAuthLogger Logger = logger;
     private protected readonly NavigationManager Navigation = navigation;
     private protected readonly IJSRuntime Js = js;
+
+    public event IAuthStateUpdateNotifier.AuthenticationStateUpdatedEventHandler? AuthenticationStateUpdated;
+
+    protected void NotifyAuthenticationStateUpdated(AuthenticationOperationInfo? authInfo)
+        => AuthenticationStateUpdated?.Invoke(this, authInfo);
 
     public async Task<AuthenticationState> GetAuthenticationStateAsync(CancellationToken cancellationToken = default)
         => await DoWhileLogging(async ()
@@ -34,6 +39,25 @@ internal class InteractiveUserService(
                     return new AuthenticationState(principal);
                 }));
 
+    public async Task<AuthenticationOperationInfo> RefreshJwtPairAsync(CancellationToken cancellationToken = default)
+        => await DoWhileLogging(async ()
+            => await DoWithJsModule(async (module)
+                =>
+            {
+                var baseUri = GetBaseUri();
+                var url = $"{baseUri.TrimEnd('/')}/_auth/refresh";
+
+                var result = await module.InvokeAsync<AuthenticationOperationInfo>(
+                    "requestAsync",
+                    cancellationToken: cancellationToken,
+                    [url, HttpMethod.Post.Method, null, "json"])
+                    ?? throw new InvalidOperationException("Failed to deserialize the authentication result info.");
+
+                NotifyAuthenticationStateUpdated(result);
+
+                return result;
+            }));
+
     public async Task<AuthenticationOperationInfo> RefreshJwtPairAsync(string refreshToken, CancellationToken cancellationToken = default)
         => await DoWhileLogging(async ()
             => await DoWithJsModule(async (module)
@@ -47,6 +71,8 @@ internal class InteractiveUserService(
                         cancellationToken: cancellationToken,
                         [url, HttpMethod.Post.Method, refreshToken, "json"])
                         ?? throw new InvalidOperationException("Failed to deserialize the authentication result info.");
+
+                    NotifyAuthenticationStateUpdated(result);
 
                     return result;
                 }));
@@ -63,6 +89,8 @@ internal class InteractiveUserService(
                         "requestAsync",
                         cancellationToken: cancellationToken,
                         [url, HttpMethod.Post.Method, null, null]);
+
+                    NotifyAuthenticationStateUpdated(null);
 
                     return true;
                 }));

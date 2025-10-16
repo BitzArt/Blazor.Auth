@@ -44,8 +44,11 @@ public static class ServerSideAddBlazorAuthExtensions
         where TIdentityClaimsService : class, IIdentityClaimsService
     {
         var options = new BlazorAuthServerOptions();
+
         configure?.Invoke(options);
+
         builder.Services.AddSingleton(options);
+        builder.Services.AddSingleton<BlazorAuthOptions>(options);
 
         builder.AddBlazorCookies();
         builder.Services.AddScoped<IBlazorAuthLogger, BlazorAuthLogger>();
