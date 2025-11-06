@@ -1,4 +1,6 @@
-﻿namespace BitzArt.Blazor.Auth;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+
+namespace BitzArt.Blazor.Auth;
 
 /// <summary>
 /// Options for configuring <b>Blazor.Auth</b>
@@ -22,4 +24,17 @@ public class BlazorAuthOptions
     /// </para>
     /// </remarks>
     public bool DisableAutoExpirationHandling { get; set; } = false;
+
+    /// <summary>
+    /// An option to specify the initial dummy authentication state.
+    /// </summary>
+    /// <para>
+    /// Specifying this option causes a dummy authentication state to be returned before performing time-consuming asynchronous authentication.
+    /// This is effective for reducing screen flickering in Blazor Server Interactive.
+    /// You can add a claim such as “loading” as needed to customize the component's display.
+    /// </para>
+    /// <para>
+    /// Default: <see langword="null"/>
+    /// </para>
+    public AuthenticationState? InitialDummyAuthState { get; set; }
 }

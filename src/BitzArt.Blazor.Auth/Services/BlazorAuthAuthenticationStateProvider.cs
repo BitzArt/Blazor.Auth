@@ -31,12 +31,14 @@ internal class BlazorAuthAuthenticationStateProvider : AuthenticationStateProvid
 
     private Task<AuthenticationState>? _currentTask;
     private Timer? _expirationTimer;
+    private AuthenticationState? _cachedState;
 
     /// <inheritdoc/>
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         lock (_lock)
         {
+            // Existing logic for subsequent calls or when option is disabled
             if (_currentTask is not null)
             {
                 return _currentTask;
@@ -47,17 +49,28 @@ internal class BlazorAuthAuthenticationStateProvider : AuthenticationStateProvid
                 lock (_lock)
                 {
                     _currentTask = null;
+                    _cachedState = authState;
 
                     if (!_options.DisableAutoExpirationHandling)
                     {
                         TrySetExpirationTimer(authState);
                     }
+                    if (_options.InitialDummyAuthState != null)
+                    {
+                        // Since it is necessary to notify even if the value is null,
+                        // ignore the null check (the reference destination does not use this value)
+                        var task = Task.FromResult(authState!);
+                        NotifyAuthenticationStateChanged(task);
+                    }
                 }
             });
-
             NotifyAuthenticationStateChanged(_currentTask);
         }
-
+        if (_options.InitialDummyAuthState != null)
+        {
+            var initialResult = _cachedState ?? _options.InitialDummyAuthState;
+            return Task.FromResult(initialResult);
+        }
         return _currentTask;
     }
 
