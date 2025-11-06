@@ -23,21 +23,7 @@ internal class InteractiveUserService(
 
     public async Task<AuthenticationState> GetAuthenticationStateAsync(CancellationToken cancellationToken = default)
         => await DoWhileLogging(async ()
-            => await DoWithJsModule(async (module)
-                =>
-                {
-                    var baseUri = GetBaseUri();
-                    var url = $"{baseUri.TrimEnd('/')}/_auth/me";
-
-                    var response = await module.InvokeAsync<ClaimsPrincipalDto>(
-                        "requestAsync",
-                        cancellationToken: cancellationToken,
-                        [url, HttpMethod.Get.Method, null, "json"]);
-
-                    var principal = response.ToModel();
-
-                    return new AuthenticationState(principal);
-                }));
+            => await DoWithJsModule((module) => GetAuthenticationStateCoreAsync(module, cancellationToken)));
 
     public async Task<AuthenticationOperationInfo> RefreshJwtPairAsync(CancellationToken cancellationToken = default)
         => await DoWhileLogging(async ()
@@ -82,6 +68,14 @@ internal class InteractiveUserService(
             => await DoWithJsModule(async (module)
                 =>
                 {
+                    // check login status: if not logged in, no need to call sign-out endpoint
+                    var authState = await GetAuthenticationStateCoreAsync(module, cancellationToken);
+                    if (authState.User.Identity is null || !authState.User.Identity.IsAuthenticated)
+                    {
+                        Logger.LogDebug("User is not authenticated. Skipping sign-out request.");
+                        return true;
+                    }
+
                     var baseUri = GetBaseUri();
                     var url = $"{baseUri.TrimEnd('/')}/_auth/sign-out";
 
@@ -94,6 +88,21 @@ internal class InteractiveUserService(
 
                     return true;
                 }));
+
+    private async Task<AuthenticationState> GetAuthenticationStateCoreAsync(IJSObjectReference module, CancellationToken cancellationToken = default)
+    {
+        var baseUri = GetBaseUri();
+        var url = $"{baseUri.TrimEnd('/')}/_auth/me";
+
+        var response = await module.InvokeAsync<ClaimsPrincipalDto>(
+            "requestAsync",
+            cancellationToken: cancellationToken,
+            [url, HttpMethod.Get.Method, null, "json"]);
+
+        var principal = response.ToModel();
+
+        return new AuthenticationState(principal);
+    }
 
     private protected string GetBaseUri()
     {
