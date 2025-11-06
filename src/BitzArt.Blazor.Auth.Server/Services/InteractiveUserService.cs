@@ -69,6 +69,7 @@ internal class InteractiveUserService(
                 =>
                 {
                     // check login status: if not logged in, no need to call sign-out endpoint
+                    // because if called in InitializeAsync of the logout component, it will be called recursively.
                     var authState = await GetAuthenticationStateCoreAsync(module, cancellationToken);
                     if (authState.User.Identity is null || !authState.User.Identity.IsAuthenticated)
                     {
